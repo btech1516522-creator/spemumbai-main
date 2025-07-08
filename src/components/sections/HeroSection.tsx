@@ -31,7 +31,7 @@ export default function HeroSection() {
         >
           <div className="max-w-3xl mx-auto">
             <h1 className="text-4xl md:text-6xl font-bold mb-6 text-spe-gray-100 drop-shadow-lg" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
-              Advancinggg the Oil and Gas Industry In India
+              Advancing the Oil and Gas Industry In India
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-spe-gray-200">
               Join the Society of Petroleum Engineers Mumbai Section to connect, learn, and grow with industry professionals.

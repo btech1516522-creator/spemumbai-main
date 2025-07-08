@@ -10,10 +10,11 @@ export default function CelebrationSticker() {
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="absolute top-10 right-10 lg:top-20 lg:right-20 xl:right-48 z-20"
+      className="absolute top-[90px] right-4 lg:top-[140px] lg:right-12 xl:top-[210px] xl:right-40 z-20"
     >
       <div className="flex flex-col items-end gap-3">
         {/* Contact info card with white text */}
+        {/*
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -44,7 +45,7 @@ export default function CelebrationSticker() {
             </div>
           </div>
         </motion.div>
-
+        */}
         {/* Celebration badge */}
         <div className="relative w-36 h-36 md:w-44 md:h-44 bg-gradient-to-br from-amber-400 via-yellow-500 to-amber-600 rounded-full shadow-xl overflow-hidden border-2 border-amber-300 transform hover:scale-105 transition-all duration-300 hover:shadow-2xl">
           {/* Background sparkle pattern */}
@@ -110,4 +111,4 @@ export default function CelebrationSticker() {
       </div>
     </motion.div>
   )
-} 
+}

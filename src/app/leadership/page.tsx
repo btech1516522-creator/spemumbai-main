@@ -11,8 +11,10 @@ export default function Leadership() {
       {/* Hero Section */}
       <section className="pt-32 pb-16 bg-spe-navy text-white">
         <div className="container-custom">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">Our Leadership Team</h1>
-          <p className="text-xl text-spe-gray-200 max-w-3xl">
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-6 text-white drop-shadow-lg">
+            Our Leadership Team
+          </h1>
+          <p className="text-xl text-blue-100 max-w-3xl">
             Meet the dedicated professionals leading the SPE Mumbai Section towards excellence in the oil and gas industry.
           </p>
         </div>
@@ -36,4 +38,4 @@ export default function Leadership() {
       <Footer />
     </main>
   )
-} 
+}

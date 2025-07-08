@@ -6,7 +6,7 @@ import { UserPlusIcon, UserGroupIcon, AcademicCapIcon, GlobeAltIcon } from '@her
 
 export default function CallToAction() {
   return (
-    <section className="py-16 bg-gradient-to-r from-spe-navy to-spe-blue text-white">
+    <section className="py-16 bg-gradient-to-r from-[#27477f] to-[#6a9be0] text-white">
       <div className="container-custom">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -98,4 +98,4 @@ export default function CallToAction() {
       </div>
     </section>
   )
-} 
+}

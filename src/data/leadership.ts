@@ -46,8 +46,8 @@ export const leadershipTeam: CommitteeMember[] = [
   },
   {
     name: "Reghu Padmanabhan",
-    position: "Communication and Outreach Chair",
-    organization: "Expro",
+    position: "Founder and CEO",
+    organization: "ARP108 Energy Solutions LLP",
     bio: "Managing external communications and stakeholder engagement.",
     image: "/images/leadership/reghu-padmanabhan.jpg"
   },
@@ -101,7 +101,7 @@ export const leadershipTeam: CommitteeMember[] = [
     image: "/images/leadership/samarth-patwardhan.jpg"
   },
   {
-    name: "Akshay Makhane",
+    name: "Akshay Makhare",
     position: "Webmaster",
     organization: "Director, Petroinnovate",
     bio: "Managing digital presence and online initiatives.",

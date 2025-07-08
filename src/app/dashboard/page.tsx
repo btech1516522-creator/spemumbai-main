@@ -32,8 +32,10 @@ export default function Dashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <h1 className="text-3xl md:text-4xl font-bold mb-3">Performance Dashboard</h1>
-              <p className="text-base md:text-lg text-spe-gray-200 max-w-3xl">
+              <h1 className="text-3xl md:text-4xl font-extrabold mb-3 text-white drop-shadow-lg">
+                Performance Dashboard
+              </h1>
+              <p className="text-base md:text-lg text-blue-100 max-w-3xl">
                 Explore key performance metrics and analytics for the SPE Mumbai Section. 
                 These graphs provide insights into our activities, membership growth, and industry trends.
               </p>
@@ -136,4 +138,4 @@ export default function Dashboard() {
       <Footer />
     </div>
   )
-} 
+}

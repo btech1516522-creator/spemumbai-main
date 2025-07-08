@@ -33,8 +33,8 @@ export default function Footer() {
         <div className="mb-12 pb-10 border-b border-spe-gray-700">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between">
             <div className="mb-6 md:mb-0 md:max-w-md">
-              <h3 className="text-xl font-bold mb-2">Stay Updated</h3>
-              <p className="text-spe-gray-300">
+              <h3 className="text-2xl font-extrabold text-white mb-2">Stay Updated</h3>
+              <p className="text-blue-200">
                 Subscribe to our newsletter for the latest events, news, and updates from SPE Mumbai Section
               </p>
             </div>
@@ -47,7 +47,7 @@ export default function Footer() {
               />
               <button
                 type="submit"
-                className="px-5 py-3 bg-spe-blue text-white font-medium rounded-md hover:bg-blue-600 transition-colors duration-300"
+                className="px-5 py-3 bg-blue-500 text-white font-bold rounded-md hover:bg-blue-600 transition-colors duration-300"
               >
                 Subscribe
               </button>
@@ -58,7 +58,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Membership Section */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Membership</h3>
+            <h3 className="text-xl font-bold text-white mb-4">Membership</h3>
             <ul className="space-y-2">
               {footerLinks.membership.map((link) => (
                 <li key={link.name}>
@@ -67,14 +67,14 @@ export default function Footer() {
                       href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-spe-gray-300 hover:text-white transition-colors duration-200"
+                      className="text-blue-100 hover:text-white text-base transition-colors duration-200"
                     >
                       {link.name}
                     </a>
                   ) : (
                     <Link
                       href={link.href}
-                      className="text-spe-gray-300 hover:text-white transition-colors duration-200"
+                      className="text-blue-100 hover:text-white text-base transition-colors duration-200"
                     >
                       {link.name}
                     </Link>
@@ -86,13 +86,13 @@ export default function Footer() {
 
           {/* Events Section */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Events</h3>
+            <h3 className="text-xl font-bold text-white mb-4">Events</h3>
             <ul className="space-y-2">
               {footerLinks.events.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-spe-gray-300 hover:text-white transition-colors duration-200"
+                    className="text-blue-100 hover:text-white text-base transition-colors duration-200"
                   >
                     {link.name}
                   </Link>
@@ -103,13 +103,13 @@ export default function Footer() {
 
           {/* About Section */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">About</h3>
+            <h3 className="text-xl font-bold text-white mb-4">About</h3>
             <ul className="space-y-2">
               {footerLinks.about.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-spe-gray-300 hover:text-white transition-colors duration-200"
+                    className="text-blue-100 hover:text-white text-base transition-colors duration-200"
                   >
                     {link.name}
                   </Link>
@@ -120,13 +120,13 @@ export default function Footer() {
 
           {/* Contact Section */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
-            <address className="not-italic text-spe-gray-300 space-y-2">
-              <p>SPE Mumbai Section</p>
-              <p>Mumbai, Maharashtra</p>
-              <p>India</p>
+            <h3 className="text-xl font-bold text-white mb-4">Contact Us</h3>
+            <address className="not-italic space-y-2 text-base">
+              <p className="text-blue-100">SPE Mumbai Section</p>
+              <p className="text-blue-100">Mumbai, Maharashtra</p>
+              <p className="text-blue-100">India</p>
               <p className="mt-4">
-                <a href="mailto:info@spemumbai.org" className="hover:text-white transition-colors duration-200">
+                <a href="mailto:info@spemumbai.org" className="hover:text-white text-blue-100 transition-colors duration-200">
                   info@spemumbai.org
                 </a>
               </p>
@@ -142,7 +142,7 @@ export default function Footer() {
                 href="https://linkedin.com/company/spe-mumbai"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-spe-gray-300 hover:text-white transition-colors duration-200"
+                className="text-blue-100 hover:text-white transition-colors duration-200"
                 aria-label="LinkedIn"
               >
                 <FaLinkedin className="h-6 w-6" />
@@ -151,7 +151,7 @@ export default function Footer() {
                 href="https://twitter.com/spemumbai"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-spe-gray-300 hover:text-white transition-colors duration-200"
+                className="text-blue-100 hover:text-white transition-colors duration-200"
                 aria-label="Twitter"
               >
                 <FaTwitter className="h-6 w-6" />
@@ -160,7 +160,7 @@ export default function Footer() {
                 href="https://facebook.com/spemumbai"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-spe-gray-300 hover:text-white transition-colors duration-200"
+                className="text-blue-100 hover:text-white transition-colors duration-200"
                 aria-label="Facebook"
               >
                 <FaFacebook className="h-6 w-6" />
@@ -169,7 +169,7 @@ export default function Footer() {
                 href="https://youtube.com/user/spemumbai"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-spe-gray-300 hover:text-white transition-colors duration-200"
+                className="text-blue-100 hover:text-white transition-colors duration-200"
                 aria-label="YouTube"
               >
                 <FaYoutube className="h-6 w-6" />
@@ -178,19 +178,19 @@ export default function Footer() {
                 href="https://instagram.com/spemumbai"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-spe-gray-300 hover:text-white transition-colors duration-200"
+                className="text-blue-100 hover:text-white transition-colors duration-200"
                 aria-label="Instagram"
               >
                 <FaInstagram className="h-6 w-6" />
               </a>
             </div>
-            <div className="text-spe-gray-300 text-sm">
-              <p>© {new Date().getFullYear()} SPE Mumbai Section. All rights reserved.</p>
+            <div className="text-blue-200 text-sm">
+              <p className="text-white">© {new Date().getFullYear()} SPE Mumbai Section. All rights reserved.</p>
               <p className="mt-1">
-                <Link href="/privacy-policy" className="hover:text-white transition-colors duration-200 mr-4">
+                <Link href="/privacy-policy" className="hover:text-white text-blue-100 transition-colors duration-200 mr-4">
                   Privacy Policy
                 </Link>
-                <Link href="/terms-of-service" className="hover:text-white transition-colors duration-200">
+                <Link href="/terms-of-service" className="hover:text-white text-blue-100 transition-colors duration-200">
                   Terms of Service
                 </Link>
               </p>
@@ -200,4 +200,4 @@ export default function Footer() {
       </div>
     </footer>
   )
-} 
+}
