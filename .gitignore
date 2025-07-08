@@ -1,0 +1,7 @@
+# Ignore node modules and build files
+node_modules
+.next
+.env
+.DS_Store
+out
+dist

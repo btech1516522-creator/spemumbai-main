@@ -1,0 +1,12 @@
+// ... existing code ...
+      description: 'The IITB student chapter was started in 2013 and focuses on technical knowledge dissemination concerning exploration, development, and production of oil and gas resources. The chapter celebrates its annual day with seminars, group activities, and quiz competitions.',
+      website: 'https://www.geos.iitb.ac.in/index.php/spe/',
+      image: '/images/student-chapters/iitb-logo.png',
+      achievements: [
+// ... existing code ...
+      established: '2015',
+      description: 'Established on January 26, 2015, the Nowrosjee Wadia College Student Chapter is affiliated with the SPE Mumbai Section. The Department of Geology & Petroleum Technology hosts this active student chapter, focusing on bridging academic knowledge with industry practices. The chapter has received multiple awards including the prestigious Presidential Award for Outstanding Student Chapter, demonstrating its excellence in petroleum engineering education and activities.',
+      website: 'https://petrotechwadia.in/spe-chapter/',
+      image: '/images/student-chapters/wadia-logo.png',
+      achievements: [
+// ... existing code ...
