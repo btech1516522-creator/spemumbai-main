@@ -25,7 +25,7 @@ export default function FeaturedSponsors() {
           className="text-center mb-12"
         >
           <h2 className="text-2xl md:text-3xl font-extrabold font-secondary text-gradient bg-gradient-to-r from-spe-navy via-spe-blue to-spe-navy bg-clip-text text-transparent mb-4 drop-shadow-lg">
-            Our Partners & Sponsors
+            Our Industry Partners
           </h2>
           <p className="text-base md:text-lg font-medium font-primary text-spe-gray-700 max-w-3xl mx-auto mb-2">
             We are proud to partner with leading companies in the oil and gas industry who support our mission 

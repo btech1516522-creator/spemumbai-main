@@ -8,6 +8,13 @@ export interface CommitteeMember {
 }
 
 export const leadershipTeam: CommitteeMember[] = [
+   {
+    name: "Pankaj Kumar",
+    position: "Director(Production), ONGC",
+    organization: "Patronage",
+    bio: "Experienced professional with extensive background in oil and gas operations.",
+    image: "/images/leadership/pankaj.jpg"
+  },
   {
     name: "N K Mitra",
     position: "Chairperson",

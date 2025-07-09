@@ -89,8 +89,10 @@ export default function Volunteering() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <h1 className="text-3xl md:text-4xl font-bold mb-3">Volunteering</h1>
-              <p className="text-base md:text-lg text-spe-gray-200 max-w-3xl">
+              <h1 className="text-3xl md:text-4xl font-extrabold mb-3 text-white drop-shadow-lg">
+                Volunteering
+              </h1>
+              <p className="text-base md:text-lg text-blue-100 max-w-3xl">
                 Help shape the future of the energy industry by volunteering with SPE Mumbai Section. 
                 There are opportunities to match every interest, skill set, and availability.
               </p>
@@ -304,4 +306,4 @@ export default function Volunteering() {
       <Footer />
     </div>
   )
-} 
+}

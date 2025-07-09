@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 // Sample news data - replace with actual news
 const newsItems = [
-	{
+	/*{
 		id: 1,
 		title: 'Annual SPE Mumbai Technical Conference Announced',
 		date: 'March 15, 2025',
@@ -29,6 +29,30 @@ const newsItems = [
 		excerpt: 'Our 2025 Distinguished Lecturer Program begins with a presentation on "Advancements in Carbon Capture Technology".',
 		image: '/images/placeholder-news.jpg',
 		slug: '/news/distinguished-lecturer-program'
+	}*/
+	{
+		id: 1,
+		title: 'A Night of Insights & Celebrations!',
+		date: '03 months ago',
+		excerpt: 'SPE Mumbai Section had the privilege of hosting a Distinguished Lecture by Ryosuke (Rio) Yokote (Rio) from Eni Australia on “Well Dynamic Simulation – Challenging the ‘Just Do This’ Approach.” The session provided a fascinating dive into how simulations enhance well operations, making them safer and more efficient.',
+		image: '/images/news/news1.jpeg',
+		slug: '/news/a-night-of-insights-and-celebrations'
+	},
+	{
+		id: 2,
+		title: '#TechConnect: An Engaging & Impactful Session!',
+		date: '29 January 2025',
+		excerpt: 'SPE Mumbai Section Monthly TechConnect, held on 29th January 2025 at Trident, BKC, involved intense and deep discussions on key industry topics.',
+		image: '/images/news/news2.jpeg',
+		slug: '/news/tech-connect-an-engaging-and-impactful-session'
+	},
+	{
+		id: 3,
+		title: '#TechConnect Session with TGT Diagnostics ',
+		date: '06 months ago',
+		excerpt: 'We had an insightful TechConnect session on Through-Barrier Diagnostics for Wells and Reservoirs, presented by Remke Ellis, Subject Matter Expert from TGT Diagnostics..',
+		image: '/images/news/news3.jpeg',
+		slug: '/news/tech-connect-session-with-tgt-diagnostics'
 	}
 ]
 

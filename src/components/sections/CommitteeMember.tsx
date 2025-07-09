@@ -46,10 +46,10 @@ export default function CommitteeMember({ member, index }: CommitteeMemberProps)
       </div>
       <div className="p-6 flex flex-col justify-between flex-1">
         <div>
-          <h3 className="text-xl font-bold text-spe-blue-500">{name}</h3>
+          <h3 className="text-xl font-bold text-spe-blue-700">{name}</h3>
           <p className="text-lg font-semibold text-spe-gray-700">{position}</p>
-          <p className="text-spe-gray-600 mb-2">{organization}</p>
-          <p className="text-spe-gray-500">{bio}</p>
+          <p className="text-spe-gray-800 mb-2">{organization}</p>
+          <p className="text-spe-gray-700">{bio}</p>
         </div>
       </div>
     </motion.div>

@@ -14,8 +14,8 @@ const navigation = [
   { name: 'Events', href: '/events' },
   { name: 'Students', href: '/students' },
   { name: 'Volunteering', href: '/volunteering' },
-  { name: 'FAQ', href: '/faq' },
-  { name: 'Contact', href: '/contact' },
+  { name: 'Reports', href: '/reports' },
+  { name: 'Gallery', href: '/gallery' },
 
 ]
 
@@ -49,7 +49,7 @@ export default function Navigation() {
                 className={`text-base font-semibold tracking-wide font-secondary transition-colors duration-200 relative group ${
                   pathname === item.href
                     ? 'text-spe-navy'
-                    : 'text-spe-gray-600 hover:text-spe-navy'
+                    : 'text-spe-gray-800 hover:text-spe-navy'
                 }`}
               >
                 {item.name}
