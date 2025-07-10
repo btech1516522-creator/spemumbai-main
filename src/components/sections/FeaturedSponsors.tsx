@@ -5,12 +5,29 @@ import Image from 'next/image'
 
 // Sample sponsor data - replace with actual sponsors
 const sponsors = [
-  { name: 'ONGC', logo: '/images/ongc.jpeg' },
-  { name: 'Reliance Industries', logo: '/images/reliance.jpeg' },
-  { name: 'Cairn India', logo: '/images/cairn_india.jpeg' },
-  { name: 'Schlumberger', logo: '/images/schlumberger.jpeg' },
-  { name: 'Baker Hughes', logo: '/images/baker_hughes.jpeg' },
-  { name: 'Halliburton', logo: '/images/halliburton.jpeg' },
+  { logo: '/images/ongc.jpeg' },
+  { logo: '/images/reliance.jpeg' },
+  { logo: '/images/cairn_india.jpeg' },
+  { logo: '/images/schlumberger.jpeg' },
+  { logo: '/images/baker_hughes.jpeg' },
+  { logo: '/images/halliburton.jpeg' },
+  { logo: '/images/sponsers/abc.jpeg'},
+  { logo: '/images/sponsers/aramco.jpeg'},
+  { logo: '/images/sponsers/chevron.jpeg'},
+  { logo: '/images/sponsers/bp.jpeg'},
+  { logo: '/images/sponsers/china.jpeg'},
+  { logo: '/images/sponsers/exlog.jpeg'},
+  { logo: '/images/sponsers/geolog.jpeg'},
+  { logo: '/images/sponsers/geoservice.jpeg'},
+  { logo: '/images/sponsers/kuwait.jpeg'},
+  { logo: '/images/sponsers/lt.jpeg'},
+  { logo: '/images/sponsers/oil_india.jpeg'},
+  { logo: '/images/sponsers/qatar.jpeg'},
+  { logo: '/images/sponsers/sinopec.jpeg'},
+  { logo: '/images/sponsers/weatherford.jpeg'},
+  { logo: '/images/sponsers/innovate.jpeg' },
+  { logo: '/images/sponsers/energy.jpeg' }
+  
 ]
 
 export default function FeaturedSponsors() {

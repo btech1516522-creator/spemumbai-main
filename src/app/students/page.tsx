@@ -44,7 +44,7 @@ export default function Students() {
       established: '2013',
       description: 'The IITB student chapter was started in 2013 and focuses on technical knowledge dissemination concerning exploration, development, and production of oil and gas resources. The chapter celebrates its annual day with seminars, group activities, and quiz competitions.',
       website: 'https://www.geos.iitb.ac.in/index.php/spe/',
-      image: '/images/placeholder-logo.png',
+      image: '/images/student-chapters/bombay.jpeg',
       achievements: [
         'Regularly organizes technical seminars and workshops',
         'Conducts intercollege quiz competitions like PETROGNOSIS',
@@ -59,10 +59,10 @@ export default function Students() {
         'Annual day celebrations with technical presentations'
       ],
       leadership: [
-        { position: 'President', name: 'Kairabi Ghosh' },
-        { position: 'Vice President', name: 'Kumari Anjali' },
-        { position: 'Secretary', name: 'Joydeep Deb' },
-        { position: 'Treasurer', name: 'Soumyajit Basak' },
+        { position: 'President', name: 'Dhananjoy Mandal' },
+        { position: 'Vice President', name: 'Naveen' },
+        { position: 'General Secretary', name: 'Shiva Rana' },
+        { position: 'Treasurer', name: 'Saikat Mandal' },
         { position: 'Faculty Advisor', name: 'Bharath Chandra Shekar' }
       ]
     },
@@ -145,9 +145,18 @@ export default function Students() {
       established: '01 Mar 1988',
       description: '',
       website: '',
-      image: '/images/student-chapters/',
+      image: '/images/student-chapters/ism.jpeg',
       achievements: [
-        
+        'Presidential Award for Outstanding Student Chapter, Engaging, Retaining, and Growing Membership (2024)',
+        'Student Chapter Excellence Award (2023)',
+        'Student Chapter Excellence Award (2022)',
+        'Gold Standard Chapter (2016)',
+        'Outstanding Student Chapter (2015)',
+        'Gold Standard Chapter (2013)',
+        'Gold Standard Chapter (2012)',
+        'Gold Standard Chapter (2011)',
+        'Gold Standard Chapter (2010)',
+        'Outstanding Student Chapter (2010)'
       ],
       activities: [
       ],
