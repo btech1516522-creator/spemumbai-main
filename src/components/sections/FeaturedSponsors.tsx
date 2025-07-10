@@ -15,19 +15,16 @@ const sponsors = [
   { logo: '/images/sponsers/aramco.jpeg'},
   { logo: '/images/sponsers/chevron.jpeg'},
   { logo: '/images/sponsers/bp.jpeg'},
-  { logo: '/images/sponsers/china.jpeg'},
-  { logo: '/images/sponsers/exlog.jpeg'},
   { logo: '/images/sponsers/geolog.jpeg'},
   { logo: '/images/sponsers/geoservice.jpeg'},
-  { logo: '/images/sponsers/kuwait.jpeg'},
   { logo: '/images/sponsers/lt.jpeg'},
   { logo: '/images/sponsers/oil_india.jpeg'},
-  { logo: '/images/sponsers/qatar.jpeg'},
-  { logo: '/images/sponsers/sinopec.jpeg'},
   { logo: '/images/sponsers/weatherford.jpeg'},
   { logo: '/images/sponsers/innovate.jpeg' },
-  { logo: '/images/sponsers/energy.jpeg' }
-  
+  { logo: '/images/sponsers/energy.jpeg' },
+  { logo: '/images/sponsers/oe.jpeg' },
+  { logo: '/images/sponsers/sko.jpeg' }, 
+  { logo: '/images/sponsers/wellkin.jpeg' },
 ]
 
 export default function FeaturedSponsors() {
