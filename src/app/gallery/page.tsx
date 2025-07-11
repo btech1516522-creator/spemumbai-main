@@ -8,16 +8,28 @@ import { motion } from 'framer-motion'
 
 // Example event data
 const galleryEvents = [
+    {
+    slug: 'techconnect6',
+    title: '#TechConnect: AI: A Tool For Defense And A Weapon For Cyber Attack',
+    date: '16 June 2025',
+    cover: '/images/gallery5/photo2.jpeg',
+  },
+    {
+    slug: 'techconnect4',
+    title: '#TechConnect: On Hydraulic Fracturing',
+    date: '13 May 2025',
+    cover: '/images/gallery4/img1.jpg',
+  },
   {
     slug: 'techconnect1', 
-    title: '#35years Of #SPEMumbaiSection',
-    date: 'April 2025',
+    title: 'Industry Academia Interaction ',
+    date: '05 April 2025',
     cover: '/images/gallery1/img1.jpeg',
   },
   {
     slug: 'techconnect2',
     title: 'A Night of Insights & Celebrations!',
-    date: 'April 2025',
+    date: '17 March 2025',
     cover: '/images/gallery2/img1.jpeg',
   },
   {
@@ -26,16 +38,11 @@ const galleryEvents = [
     date: 'February 2025',
     cover: '/images/gallery3/img1.jpeg',
   },
-   {
-    slug: 'techconnect4',
-    title: 'Tech Connect Session On Hydraulic Fracturing',
-    date: '13 May 2025',
-    cover: '/images/gallery4/img1.jpg',
-  },
+   
    {
     slug: 'techconnect5',
-    title: 'Tech Connect Session ',
-    date: '5 months ago',
+    title: `#TechConnect: The Future of Energy and The Role of SPE in Shaping the Industry's Trajactory `,
+    date: '30 April 2024',
     cover: '/images/student-chapters/ig1.jpg',
   },
   // Add more events as needed

@@ -9,19 +9,21 @@ export default function Reports() {
   // Define your reports as an array of objects
   const reports = [
     {
-      title: "Spectrum 2024",
-      image: "/images/report/rp2024.png",
-      downloadUrl: "/pdf/Spectrum-2024.pdf"
+      title: "Trending Stories",
+      image: "/images/report/rp.png",
+      downloadUrl: "/pdf/Trending-Stories.pdf"
     },
-    {
+   
+{
       title: "Spectrum 2025",
       image: "/images/report/rp2025.png",
       downloadUrl: "/pdf/Spectrum-2025.pdf"
     },
+    
     {
-      title: "Trending Stories",
-      image: "/images/report/rp.png",
-      downloadUrl: "/pdf/Trending-Stories.pdf"
+      title: "Spectrum 2024",
+      image: "/images/report/rp2024.png",
+      downloadUrl: "/pdf/Spectrum-2024.pdf"
     },
   ];
 

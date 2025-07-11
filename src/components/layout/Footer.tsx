@@ -4,10 +4,10 @@ import { FaLinkedin, FaTwitter, FaFacebook, FaYoutube, FaInstagram } from 'react
 const footerLinks = {
   membership: [
     { name: 'Join SPE', href: 'https://www.spe.org/en/join/' },
-    { name: 'Membership Benefits', href: '/membership/benefits' },
+    { name: 'Membership Benefits', href: 'https://www.spe.org/en/members/benefits/' },
     { name: 'Student Chapters', href: '/students' },
-    { name: 'Student Chapter Directory', href: '/membership/student-chapters' },
-    { name: 'Member Directory', href: '/membership/directory' },
+    { name: 'Student Chapter Directory', href: 'https://www.spe.org/en/students/' },
+    { name: 'Member Directory', href: 'https://www.spe.org/en/memberbasics/' },
   ],
   events: [
     { name: 'Upcoming Events', href: '/events' },
@@ -16,7 +16,7 @@ const footerLinks = {
     { name: 'Sponsorship', href: '/events/sponsorship' },
   ],
   about: [
-    { name: 'About SPE', href: '/about' },
+    { name: 'About SPE', href: 'https://www.spe.org/en/about/' },
     { name: 'Leadership', href: '/leadership' },
     { name: 'Committees', href: '/about/committees' },
     { name: 'Volunteering', href: '/volunteering' },

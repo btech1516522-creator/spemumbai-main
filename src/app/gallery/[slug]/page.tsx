@@ -7,13 +7,39 @@ import Image from 'next/image'
 
 // Example event images data
 const eventImages: Record<string, { title: string; images: string[] }> = {
+  techconnect6: {
+    title: '#TechConnect: AI: A Tool For Defense And A Weapon For Cyber Attack. By Mr. Hitesh Mohan (Cyberwox Energy LLC, Houston, Texas',
+    images: [
+      '/images/gallery5/photo2.jpeg',
+      '/images/gallery5/photo3.jpeg',
+      '/images/gallery5/photo4.jpeg',
+      '/images/gallery5/photo5.jpeg',
+      '/images/gallery5/photo6.jpeg',
+      '/images/gallery5/photo7.jpeg',
+      '/images/gallery5/photo8.jpeg',
+      '/images/gallery5/photo9.jpeg',
+      
+    ],
+  },
+   techconnect4: {
+    title: '#TechConnect: On Hydraulic Fracturing',
+    images: [
+      '/images/gallery4/img1.jpg',
+      '/images/gallery4/img2.jpg',    
+      '/images/gallery4/img3.jpg',
+    ],
+  },
   techconnect1: {
-    title: '#35years Of #SPEMumbaiSection',
+    title: 'Industry Academia Interaction .#35years Of #SPEMumbaiSection',
     images: [
       '/images/gallery1/img1.jpeg',
       '/images/gallery1/img2.jpeg',
       '/images/gallery1/img3.jpeg',
       '/images/gallery1/img4.jpeg',
+      '/images/gallery1/image1.jpeg',
+      '/images/gallery1/image2.jpeg',
+      '/images/gallery1/image3.jpeg',
+      '/images/gallery5/photo1.jpeg',
     ],
   },
   techconnect2: {
@@ -28,6 +54,7 @@ const eventImages: Record<string, { title: string; images: string[] }> = {
       '/images/gallery2/img7.jpg',
       '/images/gallery2/img8.jpg',
        '/images/gallery2/img9.jpeg',
+    
       
     ],
   },
@@ -42,16 +69,11 @@ const eventImages: Record<string, { title: string; images: string[] }> = {
 
     ],
   },
-   techconnect4: {
-    title: 'Tech Connect Session On Hydraulic Fracturing',
-    images: [
-      '/images/gallery4/img1.jpg',
-      '/images/gallery4/img2.jpg',    
-      '/images/gallery4/img3.jpg',
-    ],
-  },
+  
   techconnect5: {
-    title: 'Tech Connect Session',
+  title: `#TechConnect: The Future of Energy and The Role of SPE in Shaping the Industry's Trajectory. By SPE International President 2024 Mr. Terry Palisch`,
+
+ 
     images: [
       '/images/student-chapters/ig1.jpg',
       '/images/student-chapters/ig2.jpg',    

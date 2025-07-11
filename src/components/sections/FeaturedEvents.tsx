@@ -14,7 +14,7 @@ const events = [
     description: 'An insightful session featuring industry leaders discussing cutting-edge advancements in AI-driven reservoir evaluation and sustainable energy solutions, including offshore wind and decarbonisation strategies in oil and gas.',
     image: '/images/events/tech_connect.jpeg',
   },
-  {
+  /*{
     id: 2,
     title: 'Annual Technical Conference 2024',
     date: '2024-05-15',
@@ -40,7 +40,7 @@ const events = [
     location: 'IIT Bombay',
     description: 'Annual gathering of student chapters to share experiences and learn from each other.',
     image: '/images/events/student-meet.jpg',
-  },
+  },*/
 ]
 
 export default function FeaturedEvents({ showAll = false }) {
@@ -64,7 +64,7 @@ export default function FeaturedEvents({ showAll = false }) {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className={`mx-auto max-w-5xl grid ${displayedEvents.length === 1 ? 'justify-center' : ''} grid-cols-1 ${displayedEvents.length > 1 ? 'md:grid-cols-2 lg:grid-cols-3' : ''} gap-8`}>
           {displayedEvents.map((event, index) => (
             <motion.div
               key={event.id}
@@ -76,16 +76,15 @@ export default function FeaturedEvents({ showAll = false }) {
               <Link href={`/events/${event.id}`} className="block">
                 <div className="card group bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-4">
                   <div className="relative h-48 mb-4 overflow-hidden rounded-lg">
-                    <div
-                      className="absolute inset-0 bg-cover bg-center group-hover:scale-110 transition-transform duration-300"
-                      style={{
-                        backgroundImage: `url("${event.image}")`,
-                      }}
-                    />
-                  </div>
-                  <h3 className="text-lg md:text-xl font-bold font-secondary mb-2 group-hover:text-spe-blue text-spe-navy transition-colors duration-200">
-                    {event.title}
-                  </h3>
+                  <img
+                    src={event.image}
+                    alt={event.title}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+                <h3 className="text-lg md:text-xl font-bold font-secondary mb-2 group-hover:text-spe-blue text-spe-navy transition-colors duration-200">
+                  {event.title}
+                </h3>
                   <div className="space-y-2 text-sm text-spe-gray-600 font-primary">
                     <div className="flex items-center">
                       <CalendarIcon className="h-4 w-4 mr-2 text-spe-blue" />
@@ -131,3 +130,4 @@ export default function FeaturedEvents({ showAll = false }) {
     </section>
   )
 }
+
