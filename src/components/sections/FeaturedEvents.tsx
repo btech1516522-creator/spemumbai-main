@@ -43,9 +43,8 @@ const events = [
   },
 ]
 
-export default function FeaturedEvents() {
-  // Show only first 3 events
-  const featuredEvents = events.slice(0, 3);
+export default function FeaturedEvents({ showAll = false }) {
+  const displayedEvents = showAll ? events : events.slice(0, 3)
 
   return (
     <section className="section-padding bg-[#eaf2fb]">
@@ -66,7 +65,7 @@ export default function FeaturedEvents() {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {featuredEvents.map((event, index) => (
+          {displayedEvents.map((event, index) => (
             <motion.div
               key={event.id}
               initial={{ opacity: 0, y: 20 }}
@@ -115,17 +114,19 @@ export default function FeaturedEvents() {
           ))}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="text-center mt-12"
-        >
-          <Link href="/events" className="btn-primary text-lg md:text-xl font-bold font-secondary px-8 py-3 rounded-lg shadow-md hover:scale-105 transition-transform">
-            View All Events
-          </Link>
-        </motion.div>
+        {!showAll && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className="text-center mt-12"
+          >
+            <Link href="/events" className="btn-primary text-lg md:text-xl font-bold font-secondary px-8 py-3 rounded-lg shadow-md hover:scale-105 transition-transform">
+              View All Events
+            </Link>
+          </motion.div>
+        )}
       </div>
     </section>
   )
