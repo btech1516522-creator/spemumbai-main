@@ -56,9 +56,9 @@ export default function LeadershipPreview() {
                 <p className="text-base md:text-lg font-semibold font-primary text-spe-blue mb-1">
                   {member.position}
                 </p>
-                {member.company && (
+                {member.organization && (
                   <p className="text-sm md:text-base font-medium text-spe-gray-800 mb-2">
-                    {member.company}
+                    {member.organization}
                   </p>
                 )}
                 {member.bio && (
