@@ -34,6 +34,7 @@ export default function Navigation() {
                 src="/images/spe-logo.jpg" 
                 alt="SPE Mumbai Section Logo" 
                 fill
+                sizes="224px"
                 className="object-contain"
                 priority
               />

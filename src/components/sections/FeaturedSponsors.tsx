@@ -99,7 +99,7 @@ export default function FeaturedSponsors() {
                 className="bg-white shadow-md rounded-lg p-4 flex flex-col items-center justify-center h-36 hover:shadow-lg transition-shadow group"
               >
                 <div className="relative w-full h-full flex items-center justify-center">
-                  <div className="w-full h-full transition-transform duration-300 group-hover:scale-105">
+                  <div className="relative w-full h-full transition-transform duration-300 group-hover:scale-105">
                     <Image
                       src={sponsor.logo}
                       alt="Sponsor Logo"
