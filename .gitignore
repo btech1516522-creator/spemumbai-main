@@ -5,3 +5,11 @@ node_modules
 .DS_Store
 out
 dist
+
+/src/generated/prisma
+
+# SQLite database
+*.db
+*.db-journal
+*.db-wal
+*.db-shm

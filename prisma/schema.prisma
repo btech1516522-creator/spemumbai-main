@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model SiteContent {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+  updatedBy String?
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  date      String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model LeadershipMember {
+  id           String   @id @default(cuid())
+  name         String
+  position     String
+  organization String
+  bio          String
+  linkedin     String?
+  image        String?
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  date        String
+  location    String
+  description String
+  active      Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Report {
+  id          String   @id @default(cuid())
+  title       String
+  coverImage  String?
+  pdfUrl      String
+  description String
+  active      Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  tableName  String
+  recordId   String?
+  action     String
+  oldData    String?
+  newData    String?
+  changedBy  String
+  changedAt  DateTime @default(now())
+}
+
+model GalleryEvent {
+  id         String   @id @default(cuid())
+  slug       String   @unique
+  title      String
+  date       String
+  coverImage String
+  images     String   // JSON array of image paths
+  sortOrder  Int      @default(0)
+  active     Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}

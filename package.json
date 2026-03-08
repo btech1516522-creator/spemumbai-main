@@ -6,13 +6,17 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed": "node prisma/seed.js"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.18",
     "@heroicons/react": "^2.2.0",
+    "@prisma/adapter-better-sqlite3": "^7.4.2",
     "@tanstack/react-query": "^5.17.19",
+    "better-sqlite3": "^12.6.2",
     "date-fns": "^3.3.0",
+    "dotenv": "^17.3.1",
     "framer-motion": "^11.18.2",
     "next": "^14.2.35",
     "next-auth": "^4.24.5",
@@ -23,6 +27,8 @@
     "react-intersection-observer": "^9.5.3"
   },
   "devDependencies": {
+    "@prisma/client": "^7.4.2",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20.19.33",
     "@types/react": "^18.2.52",
     "@types/react-dom": "^18.2.18",
@@ -30,7 +36,9 @@
     "eslint": "^8.56.0",
     "eslint-config-next": "14.1.0",
     "postcss": "^8.4.33",
+    "prisma": "^7.4.2",
     "tailwindcss": "^3.4.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }
 }

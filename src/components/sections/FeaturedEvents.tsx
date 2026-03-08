@@ -1,10 +1,22 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { CalendarIcon, MapPinIcon, ClockIcon } from '@heroicons/react/24/outline'
 
-const events = [
+interface EventItem {
+  id: string | number
+  title: string
+  date: string
+  time?: string
+  location: string
+  description: string
+  image?: string
+  active?: boolean
+}
+
+const staticEvents: EventItem[] = [
   {
     id: 1,
     title: 'Tech Connect Session',
@@ -14,36 +26,22 @@ const events = [
     description: 'An insightful session featuring industry leaders discussing cutting-edge advancements in AI-driven reservoir evaluation and sustainable energy solutions, including offshore wind and decarbonisation strategies in oil and gas.',
     image: '/images/events/tech_connect.jpeg',
   },
-  /*{
-    id: 2,
-    title: 'Annual Technical Conference 2024',
-    date: '2024-05-15',
-    time: '09:00 AM',
-    location: 'Mumbai Convention Center',
-    description: 'Join us for our flagship technical conference featuring industry experts and cutting-edge research.',
-    image: '/images/events/atc-2024.jpg',
-  },
-  {
-    id: 3,
-    title: 'Young Professionals Workshop',
-    date: '2024-04-20',
-    time: '02:00 PM',
-    location: 'SPE Mumbai Office',
-    description: 'A workshop designed for young professionals to enhance their skills and network with industry leaders.',
-    image: '/images/events/yp-workshop.jpg',
-  },
-  {
-    id: 4,
-    title: 'Student Chapter Meet',
-    date: '2024-04-10',
-    time: '10:00 AM',
-    location: 'IIT Bombay',
-    description: 'Annual gathering of student chapters to share experiences and learn from each other.',
-    image: '/images/events/student-meet.jpg',
-  },*/
 ]
 
 export default function FeaturedEvents({ showAll = false }) {
+  const [events, setEvents] = useState<EventItem[]>(staticEvents)
+
+  useEffect(() => {
+    fetch('/api/content?type=events')
+      .then((r) => r.json())
+      .then((data: EventItem[]) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setEvents(data.filter((e) => e.active !== false))
+        }
+      })
+      .catch(() => {})
+  }, [])
+
   const displayedEvents = showAll ? events : events.slice(0, 3)
 
   return (
@@ -75,12 +73,18 @@ export default function FeaturedEvents({ showAll = false }) {
             >
               <Link href={`/events/${event.id}`} className="block">
                 <div className="card group bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-4">
-                  <div className="relative h-48 mb-4 overflow-hidden rounded-lg">
-                  <img
-                    src={event.image}
-                    alt={event.title}
-                    className="object-cover w-full h-full"
-                  />
+                  <div className="relative h-48 mb-4 overflow-hidden rounded-lg bg-spe-gray-100">
+                  {event.image ? (
+                    <img
+                      src={event.image}
+                      alt={event.title}
+                      className="object-cover w-full h-full"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-spe-blue-100">
+                      <CalendarIcon className="h-16 w-16 text-spe-blue-300" />
+                    </div>
+                  )}
                 </div>
                 <h3 className="text-lg md:text-xl font-bold font-secondary mb-2 group-hover:text-spe-blue text-spe-navy transition-colors duration-200">
                   {event.title}
@@ -95,10 +99,12 @@ export default function FeaturedEvents({ showAll = false }) {
                         day: 'numeric',
                       })}</span>
                     </div>
-                    <div className="flex items-center">
-                      <ClockIcon className="h-4 w-4 mr-2 text-spe-blue" />
-                      <span>{event.time}</span>
-                    </div>
+                    {event.time && (
+                      <div className="flex items-center">
+                        <ClockIcon className="h-4 w-4 mr-2 text-spe-blue" />
+                        <span>{event.time}</span>
+                      </div>
+                    )}
                     <div className="flex items-center">
                       <MapPinIcon className="h-4 w-4 mr-2 text-spe-blue" />
                       <span>{event.location}</span>

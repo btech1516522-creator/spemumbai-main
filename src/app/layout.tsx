@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Roboto, Open_Sans } from 'next/font/google'
 import '../styles/globals.css'
+import AuthProvider from '@/components/providers/AuthProvider'
 
 const roboto = Roboto({
   weight: ['400', '500', '700'],
@@ -27,7 +28,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${roboto.variable} ${openSans.variable}`}>
       <body className="min-h-screen flex flex-col">
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   )

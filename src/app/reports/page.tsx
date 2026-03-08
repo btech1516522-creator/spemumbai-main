@@ -1,31 +1,26 @@
-'use client'
-
 import Navigation from '@/components/layout/Navigation'
 import Footer from '@/components/layout/Footer'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
+import { prisma } from '@/lib/db'
 
-export default function Reports() {
-  // Define your reports as an array of objects
-  const reports = [
-    {
-      title: "Trending Stories",
-      image: "/images/report/rp.png",
-      downloadUrl: "/pdf/Trending-Stories.pdf"
-    },
-   
-{
-      title: "Spectrum 2025",
-      image: "/images/report/rp2025.png",
-      downloadUrl: "/pdf/Spectrum-2025.pdf"
-    },
-    
-    {
-      title: "Spectrum 2024",
-      image: "/images/report/rp2024.png",
-      downloadUrl: "/pdf/Spectrum-2024.pdf"
-    },
-  ];
+const staticReports = [
+  { title: "Trending Stories", image: "/images/report/rp.png", downloadUrl: "/pdf/Trending-Stories.pdf" },
+  { title: "Spectrum 2025",    image: "/images/report/rp2025.png", downloadUrl: "/pdf/Spectrum-2025.pdf" },
+  { title: "Spectrum 2024",    image: "/images/report/rp2024.png", downloadUrl: "/pdf/Spectrum-2024.pdf" },
+]
+
+async function getReports() {
+  try {
+    const rows = await prisma.report.findMany({ where: { active: true }, orderBy: { sortOrder: 'asc' } })
+    if (rows.length > 0) return rows.map((r) => ({ title: r.title, image: r.coverImage ?? undefined, downloadUrl: r.pdfUrl }))
+  } catch {}
+  return staticReports
+}
+
+export const revalidate = 0
+
+export default async function Reports() {
+  const reports = await getReports()
 
   return (
     <main className="flex flex-col min-h-screen">
@@ -46,30 +41,16 @@ export default function Reports() {
       {/* Reports Section */}
       <section className="section-padding bg-[#eaf2fb]">
         <div className="container-custom">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {reports.map((report, index) => (
               <div
                 key={index}
                 className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col border border-spe-blue/10 overflow-hidden mx-auto"
                 style={{ height: '420px', width: '220px', minWidth: '200px', maxWidth: '240px' }}
               >
-                {/* Card Image Section */}
-                <div
-                  className="relative w-full bg-gray-100 flex items-center justify-center"
-                  style={{ height: '68%' }}
-                >
-                  <img
-                    src={report.image}
-                    alt={report.title}
-                    className="object-cover w-full h-full"
-                  />
+                <div className="relative w-full bg-gray-100 flex items-center justify-center" style={{ height: '68%' }}>
+                  <img src={report.image} alt={report.title} className="object-cover w-full h-full" />
                 </div>
-                {/* Card Content Section */}
                 <div className="p-4 flex flex-col flex-1">
                   <h3 className="text-base md:text-lg font-bold text-spe-navy mb-1 text-center">{report.title}</h3>
                   <a
@@ -84,7 +65,7 @@ export default function Reports() {
                 </div>
               </div>
             ))}
-          </motion.div>
+          </div>
         </div>
       </section>
 
