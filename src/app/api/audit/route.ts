@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 
+type AuditLogRow = Awaited<ReturnType<typeof prisma.auditLog.findMany>>[number]
+
 async function requireAdmin() {
   const session = await getServerSession(authOptions)
   if (!session || (session.user as { role?: string }).role !== 'admin') {
@@ -52,7 +54,7 @@ export async function GET(request: Request) {
         }
       }
 
-      const enriched = logs.map((log) => {
+      const enriched = logs.map((log: AuditLogRow) => {
         const key = `${log.tableName}::${log.oldData ?? ''}`
         const restored = restoreBySnapshot.get(key)
         return {
