@@ -28,7 +28,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const { user, isAdmin, isLoading } = useRole()
 
   // Change this value to 'subtle', 'medium', or 'strong' to tune glass effect intensity.
-  const glassMode: 'subtle' | 'medium' | 'strong' = 'strong'
+  const glassMode = 'strong' as 'subtle' | 'medium' | 'strong'
   const glassShellClass =
     glassMode === 'subtle'
       ? 'admin-glass-subtle'
