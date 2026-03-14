@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import ImageUploadField from '@/components/admin/ImageUploadField'
 
 interface Event {
   id: string
@@ -9,27 +10,40 @@ interface Event {
   date: string
   location: string
   description: string
+  image: string
   active: boolean
 }
 
 export default function EventsManagement() {
   const [events, setEvents] = useState<Event[]>([])
+  const [searchTerm, setSearchTerm] = useState('')
+  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all')
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState({ type: '', text: '' })
   const [loading, setLoading] = useState(true)
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [validationErrors, setValidationErrors] = useState<Record<string, string[]>>({})
 
   useEffect(() => {
-    fetch('/api/content')
+    fetch('/api/content?type=events')
       .then((res) => res.json())
       .then((data) => {
-        setEvents(data.events || [])
+        setEvents(Array.isArray(data) ? data : [])
         setLoading(false)
       })
       .catch(() => setLoading(false))
   }, [])
 
   const saveEvents = async () => {
+    const nextErrors = validateEvents(events)
+    if (Object.keys(nextErrors).length > 0) {
+      const [firstInvalidId] = Object.keys(nextErrors)
+      setValidationErrors(nextErrors)
+      setEditingId(firstInvalidId)
+      setMessage({ type: 'error', text: nextErrors[firstInvalidId][0] })
+      return
+    }
+
     setSaving(true)
     setMessage({ type: '', text: '' })
 
@@ -62,6 +76,7 @@ export default function EventsManagement() {
       date: new Date().toISOString().split('T')[0],
       location: '',
       description: '',
+      image: '',
       active: true,
     }
     setEvents([newEvent, ...events])
@@ -69,6 +84,12 @@ export default function EventsManagement() {
   }
 
   const updateEvent = (id: string, field: string, value: string | boolean) => {
+    setValidationErrors((prev) => {
+      if (!prev[id]) return prev
+      const next = { ...prev }
+      delete next[id]
+      return next
+    })
     setEvents(events.map((e) => (e.id === id ? { ...e, [field]: value } : e)))
   }
 
@@ -77,6 +98,43 @@ export default function EventsManagement() {
       setEvents(events.filter((e) => e.id !== id))
     }
   }
+
+  const getEventErrors = (event: Event) => {
+    const errors: string[] = []
+
+    if (!event.title.trim()) errors.push('Event title is required.')
+    if (!event.date.trim()) errors.push('Event date is required.')
+    if (!event.location.trim()) errors.push('Event location is required.')
+    if (!event.description.trim()) errors.push('Event description is required.')
+
+    return errors
+  }
+
+  const validateEvents = (rows: Event[]) => {
+    return rows.reduce<Record<string, string[]>>((acc, event) => {
+      const errors = getEventErrors(event)
+      if (errors.length > 0) {
+        acc[event.id] = errors
+      }
+      return acc
+    }, {})
+  }
+
+  const filteredEvents = events.filter((event) => {
+    const term = searchTerm.trim().toLowerCase()
+    const matchesSearch =
+      !term ||
+      [event.title, event.location, event.description, event.date]
+        .filter(Boolean)
+        .some((value) => value.toLowerCase().includes(term))
+
+    const matchesStatus =
+      statusFilter === 'all' ||
+      (statusFilter === 'active' && event.active) ||
+      (statusFilter === 'inactive' && !event.active)
+
+    return matchesSearch && matchesStatus
+  })
 
   if (loading) {
     return (
@@ -104,6 +162,28 @@ export default function EventsManagement() {
         </button>
       </div>
 
+      <div className="mb-6 flex flex-col gap-3 rounded-lg border border-spe-gray-200 bg-spe-gray-50 p-4 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-1 flex-col gap-3 md:flex-row md:items-center">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search by title, location, description, or date"
+            className="w-full md:max-w-md rounded-lg border border-spe-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-spe-navy"
+          />
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as 'all' | 'active' | 'inactive')}
+            className="rounded-lg border border-spe-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-spe-navy"
+          >
+            <option value="all">All statuses</option>
+            <option value="active">Active only</option>
+            <option value="inactive">Inactive only</option>
+          </select>
+        </div>
+        <p className="text-sm text-spe-gray-500">Showing {filteredEvents.length} of {events.length} events</p>
+      </div>
+
       {/* Status Message */}
       {message.text && (
         <motion.div
@@ -126,9 +206,13 @@ export default function EventsManagement() {
           </svg>
           <p className="text-spe-gray-500">No events yet. Click &quot;Add Event&quot; to create one.</p>
         </div>
+      ) : filteredEvents.length === 0 ? (
+        <div className="bg-white rounded-xl shadow-sm border border-spe-gray-100 p-12 text-center">
+          <p className="text-spe-gray-500">No events match your current filters.</p>
+        </div>
       ) : (
         <div className="space-y-4">
-          {events.map((event) => (
+          {filteredEvents.map((event) => (
             <motion.div
               key={event.id}
               initial={{ opacity: 0, y: 10 }}
@@ -138,9 +222,16 @@ export default function EventsManagement() {
               {editingId === event.id ? (
                 // Edit mode
                 <div className="p-5 space-y-4">
+                  {validationErrors[event.id] && validationErrors[event.id].length > 0 && (
+                    <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                      {validationErrors[event.id].map((error) => (
+                        <p key={error}>{error}</p>
+                      ))}
+                    </div>
+                  )}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-semibold text-spe-gray-700 mb-1">Title</label>
+                      <label className="block text-sm font-semibold text-spe-gray-700 mb-1">Title *</label>
                       <input
                         type="text"
                         value={event.title}
@@ -150,7 +241,7 @@ export default function EventsManagement() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-spe-gray-700 mb-1">Date</label>
+                      <label className="block text-sm font-semibold text-spe-gray-700 mb-1">Date *</label>
                       <input
                         type="date"
                         value={event.date}
@@ -160,7 +251,7 @@ export default function EventsManagement() {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-spe-gray-700 mb-1">Location</label>
+                    <label className="block text-sm font-semibold text-spe-gray-700 mb-1">Location *</label>
                     <input
                       type="text"
                       value={event.location}
@@ -170,7 +261,7 @@ export default function EventsManagement() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-spe-gray-700 mb-1">Description</label>
+                    <label className="block text-sm font-semibold text-spe-gray-700 mb-1">Description *</label>
                     <textarea
                       value={event.description}
                       onChange={(e) => updateEvent(event.id, 'description', e.target.value)}
@@ -179,6 +270,15 @@ export default function EventsManagement() {
                       placeholder="Event description..."
                     />
                   </div>
+                  <div>
+                    <ImageUploadField
+                      label="Event Poster / Image"
+                      value={event.image || ''}
+                      onChange={(path) => updateEvent(event.id, 'image', path)}
+                      placeholder="No image uploaded"
+                    />
+                  </div>
+                  <p className="text-xs text-spe-gray-500">* Required fields.</p>
                   <div className="flex items-center justify-between">
                     <label className="flex items-center gap-2 text-sm">
                       <input
@@ -210,7 +310,12 @@ export default function EventsManagement() {
                 // View mode
                 <div className="p-5 flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className={`w-3 h-3 rounded-full flex-shrink-0 ${event.active ? 'bg-green-400' : 'bg-spe-gray-300'}`} />
+                    {event.image ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={event.image} alt={event.title} className="h-12 w-16 object-cover rounded-lg border border-gray-200 flex-shrink-0" />
+                    ) : (
+                      <div className={`w-3 h-3 rounded-full flex-shrink-0 ${event.active ? 'bg-green-400' : 'bg-spe-gray-300'}`} />
+                    )}
                     <div>
                       <h3 className="font-semibold text-spe-navy">{event.title || 'Untitled Event'}</h3>
                       <div className="flex items-center gap-3 text-xs text-spe-gray-500 mt-1">
@@ -222,15 +327,26 @@ export default function EventsManagement() {
                       </div>
                     </div>
                   </div>
-                  <button
-                    onClick={() => setEditingId(event.id)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-spe-navy border border-spe-navy rounded-lg hover:bg-spe-navy hover:text-white transition-colors"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                    Edit
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setEditingId(event.id)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-spe-navy border border-spe-navy rounded-lg hover:bg-spe-navy hover:text-white transition-colors"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => removeEvent(event.id)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                      Delete
+                    </button>
+                  </div>
                 </div>
               )}
             </motion.div>

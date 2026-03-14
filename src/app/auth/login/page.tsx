@@ -1,7 +1,7 @@
 'use client'
 
 import { Suspense, useState } from 'react'
-import { signIn } from 'next-auth/react'
+import { signIn, getSession } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -33,7 +33,10 @@ function LoginForm() {
       if (result?.error) {
         setError('Invalid email or password')
       } else {
-        router.push(callbackUrl)
+        const session = await getSession()
+        const role = (session?.user as { role?: string })?.role
+        const destination = callbackUrl !== '/' ? callbackUrl : role === 'admin' ? '/admin' : '/'
+        router.push(destination)
         router.refresh()
       }
     } catch {

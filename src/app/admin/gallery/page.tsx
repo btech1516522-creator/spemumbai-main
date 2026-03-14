@@ -38,10 +38,13 @@ function fromForm(f: GalleryEventForm): Omit<GalleryEvent, 'sortOrder'> {
 
 export default function GalleryManagement() {
   const [galleries, setGalleries] = useState<GalleryEventForm[]>([])
+  const [searchTerm, setSearchTerm] = useState('')
+  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all')
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState({ type: '', text: '' })
   const [loading, setLoading] = useState(true)
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [validationErrors, setValidationErrors] = useState<Record<string, string[]>>({})
 
   useEffect(() => {
     fetch('/api/content?type=gallery')
@@ -57,6 +60,16 @@ export default function GalleryManagement() {
 
   const saveAll = async (updatedList?: GalleryEventForm[]) => {
     const list = updatedList ?? galleries
+
+    const nextErrors = validateGalleries(list)
+    if (Object.keys(nextErrors).length > 0) {
+      const [firstInvalidId] = Object.keys(nextErrors)
+      setValidationErrors(nextErrors)
+      setEditingId(firstInvalidId)
+      setMessage({ type: 'error', text: nextErrors[firstInvalidId][0] })
+      return
+    }
+
     setSaving(true)
     setMessage({ type: '', text: '' })
     try {
@@ -95,6 +108,12 @@ export default function GalleryManagement() {
   }
 
   const update = (id: string, field: keyof GalleryEventForm, value: string | boolean | string[]) => {
+    setValidationErrors((prev) => {
+      if (!prev[id]) return prev
+      const next = { ...prev }
+      delete next[id]
+      return next
+    })
     setGalleries(galleries.map((g) => (g.id === id ? { ...g, [field]: value } : g)))
   }
 
@@ -102,8 +121,49 @@ export default function GalleryManagement() {
     if (confirm('Delete this gallery event?')) {
       const updated = galleries.filter((g) => g.id !== id)
       setGalleries(updated)
+      saveAll(updated)
     }
   }
+
+  const getGalleryErrors = (gallery: GalleryEventForm) => {
+    const errors: string[] = []
+
+    if (!gallery.title.trim()) errors.push('Gallery title is required.')
+    if (!gallery.slug.trim()) errors.push('Gallery slug is required.')
+    if (!gallery.date.trim()) errors.push('Gallery date is required.')
+    if (!gallery.coverImage.trim()) errors.push('Cover image is required.')
+    if (gallery.imagesList.filter(Boolean).length === 0) {
+      errors.push('At least one gallery image is required.')
+    }
+
+    return errors
+  }
+
+  const validateGalleries = (rows: GalleryEventForm[]) => {
+    return rows.reduce<Record<string, string[]>>((acc, gallery) => {
+      const errors = getGalleryErrors(gallery)
+      if (errors.length > 0) {
+        acc[gallery.id] = errors
+      }
+      return acc
+    }, {})
+  }
+
+  const filteredGalleries = galleries.filter((gallery) => {
+    const term = searchTerm.trim().toLowerCase()
+    const matchesSearch =
+      !term ||
+      [gallery.title, gallery.slug, gallery.date]
+        .filter(Boolean)
+        .some((value) => value.toLowerCase().includes(term))
+
+    const matchesStatus =
+      statusFilter === 'all' ||
+      (statusFilter === 'active' && gallery.active) ||
+      (statusFilter === 'inactive' && !gallery.active)
+
+    return matchesSearch && matchesStatus
+  })
 
   if (loading) {
     return (
@@ -128,6 +188,28 @@ export default function GalleryManagement() {
         </button>
       </div>
 
+      <div className="mb-6 flex flex-col gap-3 rounded-lg border border-spe-gray-200 bg-spe-gray-50 p-4 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-1 flex-col gap-3 md:flex-row md:items-center">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search by title, slug, or date"
+            className="w-full md:max-w-md rounded-lg border border-spe-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-spe-navy"
+          />
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as 'all' | 'active' | 'inactive')}
+            className="rounded-lg border border-spe-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-spe-navy"
+          >
+            <option value="all">All statuses</option>
+            <option value="active">Active only</option>
+            <option value="inactive">Inactive only</option>
+          </select>
+        </div>
+        <p className="text-sm text-spe-gray-500">Showing {filteredGalleries.length} of {galleries.length} galleries</p>
+      </div>
+
       {message.text && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -150,9 +232,13 @@ export default function GalleryManagement() {
           <p className="text-spe-gray-500 mb-2">No gallery events yet.</p>
           <p className="text-spe-gray-400 text-sm">Click &quot;Add Gallery&quot; to add your first event gallery.</p>
         </div>
+      ) : filteredGalleries.length === 0 ? (
+        <div className="bg-white rounded-xl shadow-sm border border-spe-gray-100 p-12 text-center">
+          <p className="text-spe-gray-500">No gallery events match your current filters.</p>
+        </div>
       ) : (
         <div className="space-y-4">
-          {galleries.map((gallery) => (
+          {filteredGalleries.map((gallery) => (
             <motion.div
               key={gallery.id}
               initial={{ opacity: 0, y: 10 }}
@@ -161,9 +247,16 @@ export default function GalleryManagement() {
             >
               {editingId === gallery.id ? (
                 <div className="p-5 space-y-4">
+                  {validationErrors[gallery.id] && validationErrors[gallery.id].length > 0 && (
+                    <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                      {validationErrors[gallery.id].map((error) => (
+                        <p key={error}>{error}</p>
+                      ))}
+                    </div>
+                  )}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-semibold text-spe-gray-700 mb-1">Title</label>
+                      <label className="block text-sm font-semibold text-spe-gray-700 mb-1">Title *</label>
                       <input
                         type="text"
                         value={gallery.title}
@@ -173,7 +266,7 @@ export default function GalleryManagement() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-spe-gray-700 mb-1">Slug (URL key)</label>
+                      <label className="block text-sm font-semibold text-spe-gray-700 mb-1">Slug (URL key) *</label>
                       <input
                         type="text"
                         value={gallery.slug}
@@ -186,7 +279,7 @@ export default function GalleryManagement() {
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-semibold text-spe-gray-700 mb-1">Date</label>
+                      <label className="block text-sm font-semibold text-spe-gray-700 mb-1">Date *</label>
                       <input
                         type="text"
                         value={gallery.date}
@@ -207,16 +300,17 @@ export default function GalleryManagement() {
                     </div>
                   </div>
                   <ImageUploadField
-                    label="Cover Image"
+                    label="Cover Image *"
                     value={gallery.coverImage}
                     onChange={(path) => update(gallery.id, 'coverImage', path)}
                     placeholder="No cover image"
                   />
                   <MultiImageUploadField
-                    label="Gallery Photos"
+                    label="Gallery Photos *"
                     images={gallery.imagesList}
                     onChange={(paths) => update(gallery.id, 'imagesList', paths)}
                   />
+                  <p className="text-xs text-spe-gray-500">* Required fields.</p>
                   <div className="flex justify-end gap-2">
                     <button
                       onClick={() => saveAll()}
@@ -256,15 +350,26 @@ export default function GalleryManagement() {
                       </div>
                     </div>
                   </div>
-                  <button
-                    onClick={() => setEditingId(gallery.id)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-spe-navy border border-spe-navy rounded-lg hover:bg-spe-navy hover:text-white transition-colors"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                    Edit
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setEditingId(gallery.id)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-spe-navy border border-spe-navy rounded-lg hover:bg-spe-navy hover:text-white transition-colors"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => removeGallery(gallery.id)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                      Delete
+                    </button>
+                  </div>
                 </div>
               )}
             </motion.div>

@@ -73,13 +73,15 @@ export default function AdminOverview() {
   return (
     <div>
       {/* Welcome Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-spe-navy">
-          Welcome back, {user?.name || 'Admin'}!
-        </h1>
-        <p className="text-spe-gray-600 mt-1">
-          Here&apos;s an overview of your SPE Mumbai Section management panel.
-        </p>
+      <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-spe-navy">
+            Welcome back, {user?.name || 'Admin'}!
+          </h1>
+          <p className="text-spe-gray-600 mt-1">
+            Here&apos;s an overview of your SPE Mumbai Section management panel.
+          </p>
+        </div>
       </div>
 
       {/* Stats Grid */}
@@ -120,12 +122,15 @@ export default function AdminOverview() {
       {/* Quick Actions */}
       <div className="bg-white rounded-xl shadow-sm border border-spe-gray-100 p-6 mb-8">
         <h2 className="text-lg font-bold text-spe-navy mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {[
-            { label: 'Edit Content', href: '/admin/content', desc: 'Update hero section & announcements' },
+            { label: 'Edit Content', href: '/admin/content', desc: 'Update hero, contact, and FAQ content' },
             { label: 'Manage Events', href: '/admin/events', desc: 'Add or edit events' },
             { label: 'Update Leadership', href: '/admin/leadership', desc: 'Modify team members' },
             { label: 'Manage Reports', href: '/admin/reports', desc: 'Upload or edit reports' },
+            { label: 'Manage Students', href: '/admin/students', desc: 'Edit student chapters' },
+            { label: 'Manage Volunteering', href: '/admin/volunteering', desc: 'Edit volunteer roles' },
+            { label: 'Dashboard Graphs', href: '/admin/dashboard', desc: 'Add or remove graph images' },
           ].map((action) => (
             <a
               key={action.label}
@@ -154,10 +159,14 @@ export default function AdminOverview() {
               {[
                 'View all pages',
                 'Access Admin Panel',
-                'Edit content & announcements',
+                'Edit content, contact, and FAQ',
+                'Manage announcements',
                 'Manage events',
                 'Update leadership info',
                 'Manage reports',
+                'Manage student chapters',
+                'Manage volunteer roles',
+                'Manage dashboard graphs',
               ].map((perm) => (
                 <tr key={perm}>
                   <td className="py-2.5 px-4 text-spe-gray-700">{perm}</td>

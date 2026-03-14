@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "seed": "node prisma/seed.js",
+    "migrate:urls": "node prisma/migrate-urls.js",
     "postinstall": "prisma generate"
   },
   "dependencies": {
@@ -16,6 +17,7 @@
     "@neondatabase/serverless": "^1.0.2",
     "@prisma/adapter-neon": "^7.4.2",
     "@prisma/adapter-pg": "^7.4.2",
+    "@supabase/supabase-js": "^2.99.1",
     "@tanstack/react-query": "^5.17.19",
     "date-fns": "^3.3.0",
     "dotenv": "^17.3.1",
@@ -30,7 +32,7 @@
     "react-intersection-observer": "^9.5.3"
   },
   "devDependencies": {
-    "@prisma/client": "^7.4.2",
+    "@prisma/client": "^7.5.0",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20.19.33",
     "@types/react": "^18.2.52",

@@ -1,19 +1,83 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Navigation from '@/components/layout/Navigation'
 import Footer from '@/components/layout/Footer'
 import { motion } from 'framer-motion'
+import { getFileUrl } from '@/lib/storageConfig'
+
+type DashboardGraph = {
+  id: number
+  src: string
+  title: string
+  caption: string
+  active: boolean
+}
 
 export default function Dashboard() {
   const [selectedGraph, setSelectedGraph] = useState<number | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [graphs, setGraphs] = useState<DashboardGraph[]>([])
 
-  const graphs = Array.from({ length: 9 }, (_, i) => ({
-    id: i + 1,
-    src: `/images/dashboard/graph${i + 1}.jpg`,
-    alt: `Performance Graph ${i + 1}`
-  }))
+  useEffect(() => {
+    const fallback = Array.from({ length: 9 }, (_, i) => ({
+      id: i + 1,
+      src: `/images/dashboard/graph${i + 1}.jpg`,
+      title: `Performance Graph ${i + 1}`,
+      caption: '',
+      active: true,
+    }))
+
+    const fetchGraphs = async () => {
+      try {
+        const res = await fetch('/api/content?type=dashboardGraphs')
+        const data = await res.json()
+
+        if (Array.isArray(data) && data.length > 0) {
+          const mapped = data
+            .map((item: unknown, index: number) => {
+              if (typeof item === 'string') {
+                return {
+                  id: index + 1,
+                  src: item,
+                  title: `Performance Graph ${index + 1}`,
+                  caption: '',
+                  active: true,
+                }
+              }
+
+              if (item && typeof item === 'object') {
+                const graph = item as { src?: string; title?: string; caption?: string; active?: boolean }
+                if (typeof graph.src === 'string' && graph.src.length > 0) {
+                  return {
+                    id: index + 1,
+                    src: graph.src,
+                    title: graph.title?.trim() || `Performance Graph ${index + 1}`,
+                    caption: graph.caption ?? '',
+                    active: graph.active ?? true,
+                  }
+                }
+              }
+
+              return null
+            })
+            .filter((item): item is DashboardGraph => !!item)
+            .filter((item) => item.active)
+
+          setGraphs(mapped.length > 0 ? mapped : fallback)
+        } else {
+          setGraphs(fallback)
+        }
+      } catch {
+        setGraphs(fallback)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchGraphs()
+  }, [])
 
   const handleGraphClick = (id: number) => {
     setSelectedGraph(selectedGraph === id ? null : id)
@@ -47,7 +111,12 @@ export default function Dashboard() {
         <section className="py-8 bg-gray-50">
           <div className="container-custom">
             <h2 className="text-2xl font-bold mb-6 text-spe-navy">Performance Metrics</h2>
-            
+
+            {loading ? (
+              <div className="flex items-center justify-center py-16">
+                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-spe-navy"></div>
+              </div>
+            ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {graphs.map((graph) => (
                 <motion.div
@@ -65,8 +134,8 @@ export default function Dashboard() {
                       : 'aspect-[4/3] h-auto'
                   }`}>
                     <Image
-                      src={graph.src}
-                      alt={graph.alt}
+                      src={getFileUrl(graph.src)}
+                      alt={graph.title}
                       fill
                       className="object-contain p-2"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -75,7 +144,7 @@ export default function Dashboard() {
                   </div>
                   <div className="p-3">
                     <h3 className="font-semibold text-base text-spe-navy">
-                      {graph.alt}
+                      {graph.title}
                     </h3>
                     {selectedGraph === graph.id && (
                       <motion.p 
@@ -83,13 +152,14 @@ export default function Dashboard() {
                         animate={{ opacity: 1 }}
                         className="mt-2 text-sm text-gray-600"
                       >
-                        Click to minimize this graph and view others. This visualization shows important metrics related to SPE Mumbai Section's performance and activities.
+                        {graph.caption || 'Click to minimize this graph and view others. This visualization shows important metrics related to SPE Mumbai Section\'s performance and activities.'}
                       </motion.p>
                     )}
                   </div>
                 </motion.div>
               ))}
             </div>
+            )}
           </div>
         </section>
 

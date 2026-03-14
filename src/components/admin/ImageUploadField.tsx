@@ -2,12 +2,20 @@
 
 import { useRef, useState } from 'react'
 import Image from 'next/image'
+import { getFileUrl } from '@/lib/storageConfig'
 
 interface ImageUploadFieldProps {
   label?: string
-  value: string           // current image path, e.g. /images/uploads/xxx.jpg
+  value: string
   onChange: (path: string) => void
   placeholder?: string
+}
+
+function isUploadedAsset(path: string) {
+  if (!path) return false
+  if (path.startsWith('http')) return true // Legacy full URLs
+  // New paths are relative and in uploads folder: /images/uploads/ or /pdf/
+  return path.startsWith('/images/') || path.startsWith('/pdf/')
 }
 
 export default function ImageUploadField({
@@ -41,8 +49,8 @@ export default function ImageUploadField({
       if (!res.ok) {
         setError(json.error || 'Upload failed')
       } else {
-        // If replacing an old uploaded image, delete it from disk
-        if (value && value.startsWith('/images/uploads/')) {
+        // If replacing an old uploaded image, delete old uploaded asset.
+        if (value && isUploadedAsset(value)) {
           await fetch('/api/upload', {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
@@ -64,8 +72,8 @@ export default function ImageUploadField({
     if (!value) return
     if (!confirm('Remove this image?')) return
 
-    // Only delete files that were uploaded (not static ones in /images/*)
-    if (value.startsWith('/images/uploads/')) {
+    // Only delete uploaded assets (Supabase URL or legacy local uploaded path).
+    if (isUploadedAsset(value)) {
       setUploading(true)
       try {
         await fetch('/api/upload', {
@@ -93,7 +101,7 @@ export default function ImageUploadField({
         <div className="mb-2 relative inline-block group">
           <div className="w-28 h-28 rounded-lg overflow-hidden border border-spe-gray-200 bg-spe-gray-50">
             <Image
-              src={value}
+              src={getFileUrl(value)}
               alt="Preview"
               width={112}
               height={112}
@@ -164,7 +172,7 @@ export default function ImageUploadField({
           )}
         </button>
 
-        {value && !value.startsWith('/images/uploads/') && (
+        {value && !isUploadedAsset(value) && (
           <span className="text-xs text-spe-gray-400 italic truncate max-w-[180px]" title={value}>
             {value}
           </span>

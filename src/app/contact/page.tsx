@@ -1,13 +1,39 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Navigation from '@/components/layout/Navigation'
 import Footer from '@/components/layout/Footer'
 import { motion } from 'framer-motion'
 import { EnvelopeIcon, PhoneIcon, MapPinIcon } from '@heroicons/react/24/outline'
 
+type ContactContent = {
+  heroTitle: string
+  heroSubtitle: string
+  email: string
+  phone: string
+  addressLines: string[]
+  officeHoursWeekdays: string
+  officeHoursWeekends: string
+  mapTitle: string
+  mapSubtitle: string
+}
+
+const defaultContactContent: ContactContent = {
+  heroTitle: 'Contact Us',
+  heroSubtitle: 'Have questions or want to get involved? Reach out to the SPE Mumbai Section. We are here to help and connect with our community.',
+  email: 'info@spemumbai.org',
+  phone: '+91 22 1234 5678',
+  addressLines: ['SPE Mumbai Section', '123 Energy Road', 'Mumbai, Maharashtra 400001', 'India'],
+  officeHoursWeekdays: 'Monday - Friday: 9:00 AM - 5:00 PM',
+  officeHoursWeekends: 'Saturday - Sunday: Closed',
+  mapTitle: 'Find Us',
+  mapSubtitle: 'Visit our office in Mumbai',
+}
+
 export default function Contact() {
   const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
+  const [contactContent, setContactContent] = useState<ContactContent>(defaultContactContent)
+  const [loading, setLoading] = useState(true)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -38,6 +64,24 @@ export default function Contact() {
     }
   }
 
+  useEffect(() => {
+    fetch('/api/content?type=contactContent')
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('Failed to load contact content')
+        }
+
+        return res.json()
+      })
+      .then((data) => {
+        setContactContent(data)
+      })
+      .catch(() => {
+        setContactContent(defaultContactContent)
+      })
+      .finally(() => setLoading(false))
+  }, [])
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
@@ -51,10 +95,9 @@ export default function Contact() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <h1 className="text-3xl md:text-4xl font-bold mb-3">Contact Us</h1>
+              <h1 className="text-3xl md:text-4xl font-bold mb-3">{contactContent.heroTitle}</h1>
               <p className="text-base md:text-lg text-spe-gray-200 max-w-3xl">
-                Have questions or want to get involved? Reach out to the SPE Mumbai Section.
-                We're here to help and connect with our community.
+                {contactContent.heroSubtitle}
               </p>
             </motion.div>
           </div>
@@ -62,6 +105,9 @@ export default function Contact() {
 
         <section className="py-12 bg-white">
           <div className="container-custom">
+            {loading && (
+              <div className="mb-6 text-sm text-spe-gray-500">Loading latest contact details...</div>
+            )}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
               {/* Contact Information */}
               <div className="lg:col-span-1">
@@ -79,8 +125,8 @@ export default function Contact() {
                     </div>
                     <div>
                       <h3 className="text-lg font-medium text-spe-navy">Email</h3>
-                      <a href="mailto:info@spemumbai.org" className="text-gray-600 hover:text-spe-blue transition-colors">
-                        info@spemumbai.org
+                      <a href={`mailto:${contactContent.email}`} className="text-gray-600 hover:text-spe-blue transition-colors">
+                        {contactContent.email}
                       </a>
                     </div>
                   </motion.div>
@@ -96,7 +142,7 @@ export default function Contact() {
                     </div>
                     <div>
                       <h3 className="text-lg font-medium text-spe-navy">Phone</h3>
-                      <p className="text-gray-600">+91 22 1234 5678</p>
+                      <p className="text-gray-600">{contactContent.phone}</p>
                     </div>
                   </motion.div>
                   
@@ -112,10 +158,12 @@ export default function Contact() {
                     <div>
                       <h3 className="text-lg font-medium text-spe-navy">Address</h3>
                       <p className="text-gray-600">
-                        SPE Mumbai Section<br />
-                        123 Energy Road<br />
-                        Mumbai, Maharashtra 400001<br />
-                        India
+                        {contactContent.addressLines.map((line) => (
+                          <span key={line}>
+                            {line}
+                            <br />
+                          </span>
+                        ))}
                       </p>
                     </div>
                   </motion.div>
@@ -123,8 +171,8 @@ export default function Contact() {
                 
                 <div className="mt-10">
                   <h3 className="text-lg font-medium mb-4 text-spe-navy">Office Hours</h3>
-                  <p className="text-gray-600 mb-2">Monday - Friday: 9:00 AM - 5:00 PM</p>
-                  <p className="text-gray-600">Saturday - Sunday: Closed</p>
+                  <p className="text-gray-600 mb-2">{contactContent.officeHoursWeekdays}</p>
+                  <p className="text-gray-600">{contactContent.officeHoursWeekends}</p>
                 </div>
               </div>
               
@@ -253,8 +301,8 @@ export default function Contact() {
               transition={{ duration: 0.5 }}
               className="text-center mb-8"
             >
-              <h2 className="text-2xl font-bold text-spe-navy">Find Us</h2>
-              <p className="text-gray-600 mt-2">Visit our office in Mumbai</p>
+              <h2 className="text-2xl font-bold text-spe-navy">{contactContent.mapTitle}</h2>
+              <p className="text-gray-600 mt-2">{contactContent.mapSubtitle}</p>
             </motion.div>
             
             <motion.div

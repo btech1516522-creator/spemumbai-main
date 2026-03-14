@@ -1,11 +1,20 @@
 'use client'
 
 import { useRef, useState } from 'react'
+import Image from 'next/image'
+import { getFileUrl } from '@/lib/storageConfig'
 
 interface MultiImageUploadFieldProps {
   label?: string
   images: string[]
   onChange: (images: string[]) => void
+}
+
+function isUploadedAsset(path: string) {
+  if (!path) return false
+  if (path.startsWith('http')) return true // Legacy full URLs
+  // New paths are relative: /images/ or /pdf/
+  return path.startsWith('/images/') || path.startsWith('/pdf/')
 }
 
 export default function MultiImageUploadField({
@@ -60,8 +69,14 @@ export default function MultiImageUploadField({
   }
 
   const removeImage = (index: number) => {
+    const target = images[index]
     const updated = images.filter((_, i) => i !== index)
     onChange(updated)
+
+    // Keep removed files in storage so they can be restored/downloaded from history.
+    if (target && isUploadedAsset(target)) {
+      return
+    }
   }
 
   const moveUp = (index: number) => {
@@ -129,7 +144,7 @@ export default function MultiImageUploadField({
         <div className="mt-3 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
           {images.filter(Boolean).map((src, index) => (
             <div key={index} className="relative group rounded-lg overflow-hidden border border-spe-gray-200 bg-spe-gray-50 aspect-square">
-              <img src={src} alt={`Photo ${index + 1}`} className="w-full h-full object-cover" />
+              <img src={getFileUrl(src)} alt={`Photo ${index + 1}`} className="w-full h-full object-cover" />
               {/* Overlay controls */}
               <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1">
                 <div className="flex gap-1">
