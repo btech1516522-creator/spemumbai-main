@@ -3,7 +3,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -47,6 +46,7 @@ model Event {
   date        String
   location    String
   description String
+  image       String?
   active      Boolean  @default(true)
   sortOrder   Int      @default(0)
   createdAt   DateTime @default(now())
@@ -87,4 +87,39 @@ model GalleryEvent {
   active     Boolean  @default(true)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+}
+
+model StudentChapter {
+  id           String   @id @default(cuid())
+  name         String
+  university   String
+  location     String
+  established  String
+  description  String
+  website      String?
+  image        String?
+  achievements String   // JSON array
+  activities   String   // JSON array
+  leadership   String   // JSON array of {position, name}
+  sortOrder    Int      @default(0)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model VolunteerRole {
+  id              String   @id @default(cuid())
+  title           String
+  category        String   // education, events, outreach, etc.
+  description     String
+  responsibilities String
+  timeCommitment  String
+  location        String
+  teamWork        String
+  skills          String
+  benefits        String
+  sortOrder       Int      @default(0)
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
