@@ -161,7 +161,7 @@ function LoginForm() {
   )
 }
 
-export default function MasterAccessPage() {
+export default function AdminLoginPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-spe-blue-50 to-spe-blue-100">
