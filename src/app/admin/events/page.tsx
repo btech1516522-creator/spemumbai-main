@@ -113,7 +113,6 @@ export default function EventsManagement() {
 
     if (!event.title.trim()) errors.push('Event title is required.')
     if (!event.date.trim()) errors.push('Event date is required.')
-    if (!event.location.trim()) errors.push('Event location is required.')
     if (!event.description.trim()) errors.push('Event description is required.')
     
     // Validate endDate >= date if endDate is provided
@@ -277,13 +276,13 @@ export default function EventsManagement() {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-spe-gray-700 mb-1">Location *</label>
+                    <label className="block text-sm font-semibold text-spe-gray-700 mb-1">Location (Optional)</label>
                     <input
                       type="text"
                       value={event.location}
                       onChange={(e) => updateEvent(event.id, 'location', e.target.value)}
                       className="w-full px-3 py-2 border border-spe-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-spe-navy focus:border-spe-navy"
-                      placeholder="Event location..."
+                      placeholder="Event location (or Online, Virtual, etc.)..."
                     />
                   </div>
                   <div>

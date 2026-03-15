@@ -205,10 +205,12 @@ export default function FeaturedEvents({ showAll = false }) {
                         <span>{event.time}</span>
                       </div>
                     )}
-                    <div className="flex items-center gap-2">
-                      <MapPinIcon className="h-4 w-4 text-spe-blue flex-shrink-0" />
-                      <span>{event.location}</span>
-                    </div>
+                    {event.location && (
+                      <div className="flex items-center gap-2">
+                        <MapPinIcon className="h-4 w-4 text-spe-blue flex-shrink-0" />
+                        <span>{event.location}</span>
+                      </div>
+                    )}
                   </div>
                   <p className="text-gray-600 text-sm font-primary leading-relaxed line-clamp-3">
                     {event.description}
