@@ -34,7 +34,6 @@ const staticEvents: EventItem[] = [
 export default function FeaturedEvents({ showAll = false }) {
   const [events, setEvents] = useState<EventItem[]>(staticEvents)
   const [lightbox, setLightbox] = useState<EventItem | null>(null)
-  const [showArchived, setShowArchived] = useState(false)
   const [registeringEvent, setRegisteringEvent] = useState<EventItem | null>(null)
   const [registrationForm, setRegistrationForm] = useState({
     name: '',
@@ -51,28 +50,36 @@ export default function FeaturedEvents({ showAll = false }) {
       .then((r) => r.json())
       .then((data: EventItem[]) => {
         if (Array.isArray(data) && data.length > 0) {
-          setEvents(data.filter((e) => e.active !== false))
+          // Load all events (active and inactive) for record keeping
+          setEvents(data)
         }
       })
       .catch(() => {})
   }, [])
 
-  // Filter events: show non-expired by default, or all if showArchived is true
-  const getFilteredEvents = () => {
+  // Check if an event is in the past
+  const isEventPast = (event: EventItem) => {
     const today = new Date().toISOString().split('T')[0]
-    if (showArchived || !showAll) {
-      // If showing archived or on homepage, include all non-expired + expired if showArchived is true
-      return events.filter((e) => {
-        if (showArchived) return true // Show all
-        // On homepage, only show non-expired events (or events without endDate)
-        return !e.endDate || e.endDate >= today
-      })
-    }
-    return events.filter((e) => !e.endDate || e.endDate >= today) // Show only active, non-expired
+    const checkDate = event.endDate || event.date
+    return checkDate < today
   }
 
-  const filteredEvents = getFilteredEvents()
-  const displayedEvents = showAll ? filteredEvents : filteredEvents.slice(0, 3)
+  // Sort events: upcoming first, then past events
+  const getSortedEvents = () => {
+    const today = new Date().toISOString().split('T')[0]
+    const upcomingEvents = events.filter((e) => {
+      const checkDate = e.endDate || e.date
+      return checkDate >= today
+    })
+    const pastEvents = events.filter((e) => {
+      const checkDate = e.endDate || e.date
+      return checkDate < today
+    }).reverse() // Show most recent past events first
+    return [...upcomingEvents, ...pastEvents]
+  }
+
+  const sortedEvents = getSortedEvents()
+  const displayedEvents = showAll ? sortedEvents : sortedEvents.slice(0, 3)
 
   const handleRegistration = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -167,9 +174,20 @@ export default function FeaturedEvents({ showAll = false }) {
               {/* Details */}
               <div className="flex flex-col justify-between p-5 flex-1">
                 <div>
-                  <h3 className="text-xl font-bold font-secondary text-spe-navy mb-3 leading-snug">
-                    {event.title}
-                  </h3>
+                  <div className="flex items-center gap-2 mb-2">
+                    <h3 className="text-xl font-bold font-secondary text-spe-navy leading-snug">
+                      {event.title}
+                    </h3>
+                    {!event.active ? (
+                      <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700">
+                        Past Event
+                      </span>
+                    ) : isEventPast(event) ? (
+                      <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">
+                        Completed
+                      </span>
+                    ) : null}
+                  </div>
                   <div className="space-y-2 text-sm text-gray-500 font-primary mb-4">
                     <div className="flex items-center gap-2">
                       <CalendarIcon className="h-4 w-4 text-spe-blue flex-shrink-0" />
@@ -206,7 +224,7 @@ export default function FeaturedEvents({ showAll = false }) {
                       </button>
                     )}
                   </div>
-                  {event.registrationEnabled && (
+                  {event.registrationEnabled && !isEventPast(event) && (
                     <button
                       onClick={() => setRegisteringEvent(event)}
                       className="self-start flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white bg-spe-navy rounded-lg hover:bg-spe-blue-700 transition-colors"
@@ -216,6 +234,11 @@ export default function FeaturedEvents({ showAll = false }) {
                       </svg>
                       Register for Event
                     </button>
+                  )}
+                  {isEventPast(event) && event.registrationEnabled && (
+                    <span className="text-xs text-gray-500">
+                      Registration closed - Event has passed
+                    </span>
                   )}
                 </div>
               </div>
@@ -237,20 +260,15 @@ export default function FeaturedEvents({ showAll = false }) {
           </motion.div>
         )}
 
-        {showAll && filteredEvents.length < events.length && (
+        {showAll && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="text-center mt-12"
+            className="text-center mt-8 text-sm text-gray-600 font-primary"
           >
-            <button
-              onClick={() => setShowArchived(!showArchived)}
-              className="btn-primary text-lg md:text-xl font-bold font-secondary px-8 py-3 rounded-lg shadow-md hover:scale-105 transition-transform"
-            >
-              {showArchived ? 'Show Upcoming Events' : 'View All Events (Including Archived)'}
-            </button>
+            <p>All events are shown - Upcoming events appear first, followed by past events for your reference</p>
           </motion.div>
         )}
       </div>
