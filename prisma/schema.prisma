@@ -50,6 +50,8 @@ model Event {
   image               String?
   active              Boolean             @default(true)
   registrationEnabled Boolean             @default(false)
+  proposalPurpose     String?
+  proposalLink        String?
   sortOrder           Int                 @default(0)
   registrations       EventRegistration[]
   createdAt           DateTime            @default(now())

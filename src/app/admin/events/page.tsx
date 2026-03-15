@@ -15,6 +15,8 @@ interface Event {
   image: string
   active: boolean
   registrationEnabled?: boolean
+  proposalPurpose?: string
+  proposalLink?: string
 }
 
 export default function EventsManagement() {
@@ -83,6 +85,8 @@ export default function EventsManagement() {
       image: '',
       active: true,
       registrationEnabled: false,
+      proposalPurpose: '',
+      proposalLink: '',
     }
     setEvents([newEvent, ...events])
     setEditingId(newEvent.id)
@@ -299,6 +303,28 @@ export default function EventsManagement() {
                       onChange={(path) => updateEvent(event.id, 'image', path)}
                       placeholder="No image uploaded"
                     />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-spe-gray-700 mb-1">Proposal Purpose (Optional)</label>
+                      <textarea
+                        value={event.proposalPurpose || ''}
+                        onChange={(e) => updateEvent(event.id, 'proposalPurpose', e.target.value)}
+                        rows={2}
+                        className="w-full px-3 py-2 border border-spe-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-spe-navy focus:border-spe-navy"
+                        placeholder="e.g., Submit your research paper, project proposal, sponsorship inquiry..."
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-spe-gray-700 mb-1">Proposal Link (Optional)</label>
+                      <input
+                        type="url"
+                        value={event.proposalLink || ''}
+                        onChange={(e) => updateEvent(event.id, 'proposalLink', e.target.value)}
+                        className="w-full px-3 py-2 border border-spe-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-spe-navy focus:border-spe-navy"
+                        placeholder="https://..."
+                      />
+                    </div>
                   </div>
                   <p className="text-xs text-spe-gray-500">* Required fields.</p>
                   <div className="flex flex-col gap-4">

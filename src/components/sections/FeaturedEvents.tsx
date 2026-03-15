@@ -17,6 +17,8 @@ interface EventItem {
   image?: string
   active?: boolean
   registrationEnabled?: boolean
+  proposalPurpose?: string
+  proposalLink?: string
 }
 
 const staticEvents: EventItem[] = [
@@ -211,6 +213,22 @@ export default function FeaturedEvents({ showAll = false }) {
                   <p className="text-gray-600 text-sm font-primary leading-relaxed line-clamp-3">
                     {event.description}
                   </p>
+                  {event.proposalPurpose && (
+                    <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                      <p className="text-xs font-semibold text-blue-900 mb-1">📋 Call for Submissions:</p>
+                      <p className="text-sm text-blue-800">{event.proposalPurpose}</p>
+                      {event.proposalLink && (
+                        <a
+                          href={event.proposalLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block mt-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded text-center transition-colors w-fit"
+                        >
+                          Submit Here →
+                        </a>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-col gap-3 mt-4">
                   <div className="flex items-center gap-2">
