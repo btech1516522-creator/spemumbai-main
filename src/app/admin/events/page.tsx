@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import ImageUploadField from '@/components/admin/ImageUploadField'
+import { getFileUrl } from '@/lib/storageConfig'
 
 interface Event {
   id: string
@@ -346,7 +347,7 @@ export default function EventsManagement() {
                   <div className="flex items-center gap-4">
                     {event.image ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={event.image} alt={event.title} className="h-12 w-16 object-cover rounded-lg border border-gray-200 flex-shrink-0" />
+                      <img src={getFileUrl(event.image)} alt={event.title} className="h-12 w-16 object-cover rounded-lg border border-gray-200 flex-shrink-0" />
                     ) : (
                       <div className={`w-3 h-3 rounded-full flex-shrink-0 ${event.active ? 'bg-green-400' : 'bg-spe-gray-300'}`} />
                     )}

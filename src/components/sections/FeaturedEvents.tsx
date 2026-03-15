@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { CalendarIcon, MapPinIcon, ClockIcon, XMarkIcon, MagnifyingGlassPlusIcon } from '@heroicons/react/24/outline'
+import { getFileUrl } from '@/lib/storageConfig'
 
 interface EventItem {
   id: string | number
@@ -144,7 +145,7 @@ export default function FeaturedEvents({ showAll = false }) {
                 {event.image ? (
                   <>
                     <img
-                      src={event.image}
+                      src={getFileUrl(event.image)}
                       alt={event.title}
                       className="w-full h-52 sm:h-full object-cover"
                     />
