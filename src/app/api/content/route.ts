@@ -469,7 +469,7 @@ export async function PUT(request: Request) {
       if (Array.isArray(data) && data.length > 0) {
         await prisma.event.createMany({
           data: data.map(
-            (e: { title: string; date: string; endDate?: string; location: string; description: string; image?: string; active: boolean }, idx: number) => ({
+            (e: { title: string; date: string; endDate?: string; location: string; description: string; image?: string; active: boolean; registrationEnabled?: boolean }, idx: number) => ({
               title: e.title,
               date: e.date,
               endDate: e.endDate ?? null,
@@ -477,6 +477,7 @@ export async function PUT(request: Request) {
               description: e.description,
               image: e.image ?? null,
               active: e.active ?? true,
+              registrationEnabled: e.registrationEnabled ?? false,
               sortOrder: idx,
             })
           ),

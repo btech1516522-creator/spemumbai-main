@@ -13,6 +13,7 @@ interface Event {
   description: string
   image: string
   active: boolean
+  registrationEnabled?: boolean
 }
 
 export default function EventsManagement() {
@@ -80,6 +81,7 @@ export default function EventsManagement() {
       description: '',
       image: '',
       active: true,
+      registrationEnabled: false,
     }
     setEvents([newEvent, ...events])
     setEditingId(newEvent.id)
@@ -298,17 +300,30 @@ export default function EventsManagement() {
                     />
                   </div>
                   <p className="text-xs text-spe-gray-500">* Required fields.</p>
-                  <div className="flex items-center justify-between">
-                    <label className="flex items-center gap-2 text-sm">
-                      <input
-                        type="checkbox"
-                        checked={event.active}
-                        onChange={(e) => updateEvent(event.id, 'active', e.target.checked)}
-                        className="rounded border-spe-gray-300 text-spe-navy focus:ring-spe-navy"
-                      />
-                      Active
-                    </label>
-                    <div className="flex gap-2">
+                  <div className="flex flex-col gap-4">
+                    <div className="flex items-center gap-6">
+                      <label className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={event.active}
+                          onChange={(e) => updateEvent(event.id, 'active', e.target.checked)}
+                          className="rounded border-spe-gray-300 text-spe-navy focus:ring-spe-navy"
+                        />
+                        Active
+                      </label>
+                      <label className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={event.registrationEnabled || false}
+                          onChange={(e) => updateEvent(event.id, 'registrationEnabled', e.target.checked)}
+                          className="rounded border-spe-gray-300 text-spe-navy focus:ring-spe-navy"
+                        />
+                        Enable Registration
+                      </label>
+                    </div>
+                  </div>
+                  <div className="flex">
+                    <div className="flex gap-2 ml-auto">
                       <button
                         onClick={saveEvents}
                         disabled={saving}

@@ -15,6 +15,7 @@ interface EventItem {
   description: string
   image?: string
   active?: boolean
+  registrationEnabled?: boolean
 }
 
 const staticEvents: EventItem[] = [
@@ -33,6 +34,16 @@ export default function FeaturedEvents({ showAll = false }) {
   const [events, setEvents] = useState<EventItem[]>(staticEvents)
   const [lightbox, setLightbox] = useState<EventItem | null>(null)
   const [showArchived, setShowArchived] = useState(false)
+  const [registeringEvent, setRegisteringEvent] = useState<EventItem | null>(null)
+  const [registrationForm, setRegistrationForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    company: '',
+    message: '',
+  })
+  const [registrationLoading, setRegistrationLoading] = useState(false)
+  const [registrationMessage, setRegistrationMessage] = useState({ type: '', text: '' })
 
   useEffect(() => {
     fetch('/api/content?type=events')
@@ -61,6 +72,44 @@ export default function FeaturedEvents({ showAll = false }) {
 
   const filteredEvents = getFilteredEvents()
   const displayedEvents = showAll ? filteredEvents : filteredEvents.slice(0, 3)
+
+  const handleRegistration = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!registeringEvent) return
+
+    if (!registrationForm.name || !registrationForm.email) {
+      setRegistrationMessage({ type: 'error', text: 'Name and email are required' })
+      return
+    }
+
+    setRegistrationLoading(true)
+    setRegistrationMessage({ type: '', text: '' })
+
+    try {
+      const res = await fetch(`/api/events/${registeringEvent.id}/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(registrationForm),
+      })
+
+      const data = await res.json()
+
+      if (res.ok) {
+        setRegistrationMessage({ type: 'success', text: data.message || 'Registered successfully!' })
+        setRegistrationForm({ name: '', email: '', phone: '', company: '', message: '' })
+        setTimeout(() => {
+          setRegisteringEvent(null)
+          setRegistrationMessage({ type: '', text: '' })
+        }, 2000)
+      } else {
+        setRegistrationMessage({ type: 'error', text: data.error || 'Registration failed' })
+      }
+    } catch {
+      setRegistrationMessage({ type: 'error', text: 'An error occurred. Please try again.' })
+    } finally {
+      setRegistrationLoading(false)
+    }
+  }
 
   return (
     <section className="section-padding bg-[#eaf2fb]">
@@ -144,15 +193,30 @@ export default function FeaturedEvents({ showAll = false }) {
                     {event.description}
                   </p>
                 </div>
-                {event.image && (
-                  <button
-                    onClick={() => setLightbox(event)}
-                    className="mt-4 self-start flex items-center gap-1.5 text-sm font-semibold text-spe-blue hover:text-spe-navy transition-colors"
-                  >
-                    <MagnifyingGlassPlusIcon className="h-4 w-4" />
-                    View Full Poster
-                  </button>
-                )}
+                <div className="flex flex-col gap-3 mt-4">
+                  <div className="flex items-center gap-2">
+                    {event.image && (
+                      <button
+                        onClick={() => setLightbox(event)}
+                        className="flex items-center gap-1.5 text-sm font-semibold text-spe-blue hover:text-spe-navy transition-colors"
+                      >
+                        <MagnifyingGlassPlusIcon className="h-4 w-4" />
+                        View Full Poster
+                      </button>
+                    )}
+                  </div>
+                  {event.registrationEnabled && (
+                    <button
+                      onClick={() => setRegisteringEvent(event)}
+                      className="self-start flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white bg-spe-navy rounded-lg hover:bg-spe-blue-700 transition-colors"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM9 19c-4.35 0-8 1.343-8 3v2h16v-2c0-1.657-3.65-3-8-3z" />
+                      </svg>
+                      Register for Event
+                    </button>
+                  )}
+                </div>
               </div>
             </motion.div>
           ))}
@@ -189,6 +253,142 @@ export default function FeaturedEvents({ showAll = false }) {
           </motion.div>
         )}
       </div>
+
+      {/* Registration Modal */}
+      <AnimatePresence>
+        {registeringEvent && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+            onClick={() => setRegisteringEvent(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+              className="relative w-full max-w-md bg-white rounded-2xl overflow-hidden shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setRegisteringEvent(null)}
+                className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-spe-gray-100 hover:bg-spe-gray-200 transition-colors"
+              >
+                <XMarkIcon className="h-5 w-5 text-spe-navy" />
+              </button>
+
+              <div className="bg-gradient-to-r from-spe-navy to-spe-blue-500 px-6 py-4 text-white">
+                <h3 className="text-lg font-bold mb-1">{registeringEvent.title}</h3>
+                <p className="text-sm text-blue-100">Register for this event</p>
+              </div>
+
+              <form onSubmit={handleRegistration} className="p-6 space-y-4">
+                {registrationMessage.text && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`px-4 py-3 rounded-lg text-sm flex items-center gap-2 ${
+                      registrationMessage.type === 'success'
+                        ? 'bg-green-50 text-green-700 border border-green-200'
+                        : 'bg-red-50 text-red-700 border border-red-200'
+                    }`}
+                  >
+                    {registrationMessage.type === 'success' ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                    {registrationMessage.text}
+                  </motion.div>
+                )}
+
+                <div>
+                  <label className="block text-sm font-semibold text-spe-gray-700 mb-1.5">Full Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={registrationForm.name}
+                    onChange={(e) => setRegistrationForm({ ...registrationForm, name: e.target.value })}
+                    className="w-full px-4 py-2.5 border border-spe-gray-300 rounded-lg text-spe-gray-900 focus:ring-2 focus:ring-spe-navy focus:border-spe-navy"
+                    placeholder="Your full name"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-spe-gray-700 mb-1.5">Email *</label>
+                  <input
+                    type="email"
+                    required
+                    value={registrationForm.email}
+                    onChange={(e) => setRegistrationForm({ ...registrationForm, email: e.target.value })}
+                    className="w-full px-4 py-2.5 border border-spe-gray-300 rounded-lg text-spe-gray-900 focus:ring-2 focus:ring-spe-navy focus:border-spe-navy"
+                    placeholder="your@email.com"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-spe-gray-700 mb-1.5">Phone Number</label>
+                  <input
+                    type="tel"
+                    value={registrationForm.phone}
+                    onChange={(e) => setRegistrationForm({ ...registrationForm, phone: e.target.value })}
+                    className="w-full px-4 py-2.5 border border-spe-gray-300 rounded-lg text-spe-gray-900 focus:ring-2 focus:ring-spe-navy focus:border-spe-navy"
+                    placeholder="+91 XXXXX XXXXX"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-spe-gray-700 mb-1.5">Company</label>
+                  <input
+                    type="text"
+                    value={registrationForm.company}
+                    onChange={(e) => setRegistrationForm({ ...registrationForm, company: e.target.value })}
+                    className="w-full px-4 py-2.5 border border-spe-gray-300 rounded-lg text-spe-gray-900 focus:ring-2 focus:ring-spe-navy focus:border-spe-navy"
+                    placeholder="Your company name"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-spe-gray-700 mb-1.5">Message (Optional)</label>
+                  <textarea
+                    value={registrationForm.message}
+                    onChange={(e) => setRegistrationForm({ ...registrationForm, message: e.target.value })}
+                    rows={3}
+                    className="w-full px-4 py-2.5 border border-spe-gray-300 rounded-lg text-spe-gray-900 focus:ring-2 focus:ring-spe-navy focus:border-spe-navy"
+                    placeholder="Any additional message..."
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={registrationLoading}
+                  className="w-full btn-primary py-3 text-center flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {registrationLoading ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                      Registering...
+                    </>
+                  ) : (
+                    'Complete Registration'
+                  )}
+                </button>
+
+                <p className="text-xs text-spe-gray-500 text-center">* Required fields</p>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Lightbox modal */}
       <AnimatePresence>
