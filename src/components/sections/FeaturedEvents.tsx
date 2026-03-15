@@ -9,6 +9,7 @@ interface EventItem {
   id: string | number
   title: string
   date: string
+  endDate?: string
   time?: string
   location: string
   description: string
@@ -31,6 +32,7 @@ const staticEvents: EventItem[] = [
 export default function FeaturedEvents({ showAll = false }) {
   const [events, setEvents] = useState<EventItem[]>(staticEvents)
   const [lightbox, setLightbox] = useState<EventItem | null>(null)
+  const [showArchived, setShowArchived] = useState(false)
 
   useEffect(() => {
     fetch('/api/content?type=events')
@@ -43,7 +45,22 @@ export default function FeaturedEvents({ showAll = false }) {
       .catch(() => {})
   }, [])
 
-  const displayedEvents = showAll ? events : events.slice(0, 3)
+  // Filter events: show non-expired by default, or all if showArchived is true
+  const getFilteredEvents = () => {
+    const today = new Date().toISOString().split('T')[0]
+    if (showArchived || !showAll) {
+      // If showing archived or on homepage, include all non-expired + expired if showArchived is true
+      return events.filter((e) => {
+        if (showArchived) return true // Show all
+        // On homepage, only show non-expired events (or events without endDate)
+        return !e.endDate || e.endDate >= today
+      })
+    }
+    return events.filter((e) => !e.endDate || e.endDate >= today) // Show only active, non-expired
+  }
+
+  const filteredEvents = getFilteredEvents()
+  const displayedEvents = showAll ? filteredEvents : filteredEvents.slice(0, 3)
 
   return (
     <section className="section-padding bg-[#eaf2fb]">
@@ -108,7 +125,9 @@ export default function FeaturedEvents({ showAll = false }) {
                       <CalendarIcon className="h-4 w-4 text-spe-blue flex-shrink-0" />
                       <span>{new Date(event.date).toLocaleDateString('en-US', {
                         weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
-                      })}</span>
+                      })}
+                      {event.endDate && event.endDate !== event.date && ` → ${new Date(event.endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`}
+                      </span>
                     </div>
                     {event.time && (
                       <div className="flex items-center gap-2">
@@ -152,6 +171,23 @@ export default function FeaturedEvents({ showAll = false }) {
             </Link>
           </motion.div>
         )}
+
+        {showAll && filteredEvents.length < events.length && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className="text-center mt-12"
+          >
+            <button
+              onClick={() => setShowArchived(!showArchived)}
+              className="btn-primary text-lg md:text-xl font-bold font-secondary px-8 py-3 rounded-lg shadow-md hover:scale-105 transition-transform"
+            >
+              {showArchived ? 'Show Upcoming Events' : 'View All Events (Including Archived)'}
+            </button>
+          </motion.div>
+        )}
       </div>
 
       {/* Lightbox modal */}
@@ -189,6 +225,7 @@ export default function FeaturedEvents({ showAll = false }) {
                   <span className="flex items-center gap-1">
                     <CalendarIcon className="h-4 w-4" />
                     {new Date(lightbox.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                    {lightbox.endDate && lightbox.endDate !== lightbox.date && ` → ${new Date(lightbox.endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`}
                   </span>
                   <span className="flex items-center gap-1">
                     <MapPinIcon className="h-4 w-4" />

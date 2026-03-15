@@ -264,7 +264,25 @@ export async function GET(request: Request) {
     }
 
     if (type === 'events') {
-      const events = await prisma.event.findMany({ orderBy: { sortOrder: 'asc' } })
+      let events = await prisma.event.findMany({ orderBy: { sortOrder: 'asc' } })
+      
+      // Auto-disable expired events
+      const today = new Date().toISOString().split('T')[0]
+      const expiredEvents = events.filter(e => e.endDate && e.endDate < today && e.active)
+      
+      if (expiredEvents.length > 0) {
+        await Promise.all(
+          expiredEvents.map(e => 
+            prisma.event.update({
+              where: { id: e.id },
+              data: { active: false }
+            })
+          )
+        )
+        // Re-fetch to get updated state
+        events = await prisma.event.findMany({ orderBy: { sortOrder: 'asc' } })
+      }
+      
       return NextResponse.json(events)
     }
 
@@ -451,9 +469,10 @@ export async function PUT(request: Request) {
       if (Array.isArray(data) && data.length > 0) {
         await prisma.event.createMany({
           data: data.map(
-            (e: { title: string; date: string; location: string; description: string; image?: string; active: boolean }, idx: number) => ({
+            (e: { title: string; date: string; endDate?: string; location: string; description: string; image?: string; active: boolean }, idx: number) => ({
               title: e.title,
               date: e.date,
+              endDate: e.endDate ?? null,
               location: e.location,
               description: e.description,
               image: e.image ?? null,

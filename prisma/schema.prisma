@@ -44,6 +44,7 @@ model Event {
   id          String   @id @default(cuid())
   title       String
   date        String
+  endDate     String?
   location    String
   description String
   image       String?

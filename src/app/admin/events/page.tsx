@@ -8,6 +8,7 @@ interface Event {
   id: string
   title: string
   date: string
+  endDate?: string
   location: string
   description: string
   image: string
@@ -74,6 +75,7 @@ export default function EventsManagement() {
       id: Date.now().toString(),
       title: '',
       date: new Date().toISOString().split('T')[0],
+      endDate: '',
       location: '',
       description: '',
       image: '',
@@ -106,6 +108,13 @@ export default function EventsManagement() {
     if (!event.date.trim()) errors.push('Event date is required.')
     if (!event.location.trim()) errors.push('Event location is required.')
     if (!event.description.trim()) errors.push('Event description is required.')
+    
+    // Validate endDate >= date if endDate is provided
+    if (event.endDate && event.date) {
+      if (new Date(event.endDate) < new Date(event.date)) {
+        errors.push('Event end date must be on or after the start date.')
+      }
+    }
 
     return errors
   }
@@ -124,8 +133,8 @@ export default function EventsManagement() {
     const term = searchTerm.trim().toLowerCase()
     const matchesSearch =
       !term ||
-      [event.title, event.location, event.description, event.date]
-        .filter(Boolean)
+      [event.title, event.location, event.description, event.date, event.endDate]
+        .filter((v): v is string => Boolean(v))
         .some((value) => value.toLowerCase().includes(term))
 
     const matchesStatus =
@@ -249,6 +258,16 @@ export default function EventsManagement() {
                         className="w-full px-3 py-2 border border-spe-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-spe-navy focus:border-spe-navy"
                       />
                     </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-spe-gray-700 mb-1">End Date (Optional)</label>
+                      <input
+                        type="date"
+                        value={event.endDate || ''}
+                        onChange={(e) => updateEvent(event.id, 'endDate', e.target.value)}
+                        className="w-full px-3 py-2 border border-spe-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-spe-navy focus:border-spe-navy"
+                      />
+                      <p className="text-xs text-spe-gray-500 mt-1">Leave blank for single-day events</p>
+                    </div>
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-spe-gray-700 mb-1">Location *</label>
@@ -320,6 +339,7 @@ export default function EventsManagement() {
                       <h3 className="font-semibold text-spe-navy">{event.title || 'Untitled Event'}</h3>
                       <div className="flex items-center gap-3 text-xs text-spe-gray-500 mt-1">
                         <span>{event.date || 'No date'}</span>
+                        {event.endDate && <span>→ {event.endDate}</span>}
                         {event.location && <span>| {event.location}</span>}
                         <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${event.active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
                           {event.active ? 'Active' : 'Inactive'}
