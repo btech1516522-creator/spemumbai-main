@@ -1,5 +1,6 @@
 import { type NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import { getStoredPassword } from './password-store'
 
 // Define user roles
 export type UserRole = 'admin'
@@ -49,13 +50,18 @@ export const authOptions: NextAuthOptions = {
           return null
         }
 
-        const user = users.find(
-          (u) =>
-            u.email === credentials.email &&
-            u.password === credentials.password
-        )
+        const user = users.find((u) => u.email === credentials.email)
 
-        if (user) {
+        if (!user) {
+          return null
+        }
+
+        // Check if password matches original or reset password
+        const resetPassword = getStoredPassword(credentials.email)
+        const passwordMatch =
+          user.password === credentials.password || resetPassword === credentials.password
+
+        if (passwordMatch) {
           return {
             id: user.id,
             name: user.name,

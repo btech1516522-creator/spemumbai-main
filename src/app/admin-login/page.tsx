@@ -142,9 +142,12 @@ function LoginForm() {
               )}
             </button>
 
-            <div className="text-center pt-2">
-              <Link href="/" className="text-sm text-spe-navy hover:text-spe-blue-600 font-medium">
+            <div className="flex items-center justify-between pt-4 text-sm">
+              <Link href="/" className="text-spe-navy hover:text-spe-blue-600 font-medium">
                 &larr; Back to Home
+              </Link>
+              <Link href="/admin-login/reset-password" className="text-spe-navy hover:text-spe-blue-600 font-medium">
+                Forgot Password?
               </Link>
             </div>
           </form>
